@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Stage| AI活用の実践コミュニティ</title>
 <meta name="description" content="毎月開催されるウェビナーで、実際の現場で使われたAI活用事例を共有しています。初心者から実務担当者まで、一歩先のAI活用を学べるコミュニティです。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet">
 <style>
 /* ================================================================
    RESET & VARIABLES  ― ダーク（黒背景・グリーンアクセント）
@@ -148,17 +150,28 @@ nav{
   padding:1.4rem 1.25rem 1rem;
   line-height:normal;
 }
+.hero-tagline-wrap{
+  display:flex;align-items:center;gap:.7rem;
+  margin-bottom:.9rem;
+}
+.hero-tagline-line{
+  width:28px;height:2px;background:#166534;flex-shrink:0;border-radius:2px;
+}
+.hero-tagline{
+  font-size:.92rem;font-weight:700;color:#166534;letter-spacing:.03em;
+}
 .hero-main-copy{
-  font-size:clamp(1.25rem,5vw,2rem);
-  font-weight:800;
+  font-family:'Noto Serif JP','Yu Mincho','Georgia',serif;
+  font-size:clamp(1.35rem,5vw,2.1rem);
+  font-weight:900;
   color:#111;
   line-height:1.35;
-  margin-bottom:.7rem;
+  margin-bottom:.8rem;
 }
 .hero-sub-copy{
-  font-size:.88rem;
+  font-size:.87rem;
   color:#374151;
-  line-height:1.75;
+  line-height:1.8;
 }
 /* Desktop: full image, text overlay in bottom-left white area */
 @media(min-width:640px){
@@ -168,18 +181,20 @@ nav{
   }
   .hero-text-overlay{
     position:absolute;
-    top:38%;
+    top:34%;
     left:4%;
-    width:40%;
+    width:42%;
     background:transparent;
     padding:0;
   }
-  .hero-main-copy{font-size:clamp(1.2rem,2.2vw,1.75rem);color:#1a1a1a;}
-  .hero-sub-copy{font-size:clamp(.78rem,1.1vw,.9rem);color:#374151;}
+  .hero-tagline{font-size:1rem;}
+  .hero-main-copy{font-size:clamp(1.3rem,2.4vw,1.9rem);color:#1a1a1a;}
+  .hero-sub-copy{font-size:clamp(.78rem,1.1vw,.88rem);color:#374151;}
 }
 @media(min-width:1100px){
-  .hero-text-overlay{left:5%;width:38%;top:40%;}
-  .hero-main-copy{font-size:1.75rem;}
+  .hero-text-overlay{left:5%;width:40%;top:36%;}
+  .hero-main-copy{font-size:1.9rem;}
+  .hero-tagline{font-size:1.05rem;}
 }
 /* White action band below hero image */
 .hero-action-wrap{
@@ -578,6 +593,10 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
   <div class="hero-image-wrap">
     <img src="hero.png" alt="AI Stage - AI活用の実践者が集うコミュニティ" class="hero-img" />
     <div class="hero-text-overlay">
+      <div class="hero-tagline-wrap">
+        <span class="hero-tagline-line"></span>
+        <span class="hero-tagline">AIで、あなたのステージを次のレベルへ。</span>
+      </div>
       <p class="hero-main-copy">学び、実践し、未来を創る。<br>AI活用の実践者が集うステージ。</p>
       <p class="hero-sub-copy">AI Stageは、AIを使って成果を出している実践者たちが<br>リアルな経験を共有するウェビナーコミュニティです。<br><br>初心者向けハンズオンから実案件の事例共有まで、<br>毎月さまざまなテーマでオンラインイベントを開催しています。</p>
     </div>
