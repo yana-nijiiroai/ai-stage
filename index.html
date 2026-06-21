@@ -1132,18 +1132,6 @@ MEMBERS.forEach(m => {
     </div>`);
 });
 
-document.getElementById('satisfaction-badge').innerHTML = `
-  <div class="satisfaction-num">${TESTIMONIALS.satisfactionRate}</div>
-  <div class="satisfaction-label">${TESTIMONIALS.satisfactionLabel}</div>`;
-document.getElementById('testimonials-desc').textContent = TESTIMONIALS.desc;
-const tGrid = document.getElementById('testimonials-grid');
-TESTIMONIALS.items.forEach(t => {
-  tGrid.insertAdjacentHTML('beforeend', `
-    <div class="testimonial-card">
-      <div class="testimonial-text"><p>${t.text}</p></div>
-      <div class="testimonial-author">— ${t.author}</div>
-    </div>`);
-});
 
 const joinGrid = document.getElementById('join-grid');
 HOW_TO_JOIN.forEach(item => {
