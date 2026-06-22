@@ -43,7 +43,7 @@ body{
   background:var(--bg2);
   color:var(--text);
   line-height:1.85;
-  font-size:18px;
+  font-size:20px;
   -webkit-font-smoothing:antialiased;
 }
 img{display:block;max-width:100%}
@@ -70,7 +70,7 @@ a:hover{opacity:.75}
   color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;
 }
 .section-title{
-  font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:800;
+  font-size:clamp(2rem,3.5vw,2.5rem);font-weight:800;
   line-height:1.25;letter-spacing:-.02em;margin-bottom:.7rem;
   color:var(--text);
 }
@@ -235,6 +235,8 @@ nav{
 .timeline-speaker{font-size:.82rem;color:var(--accent);margin-bottom:.5rem}
 .timeline-desc{font-size:.84rem;color:var(--text2);line-height:1.6}
 .timeline-stats{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.timeline-peatix-link{display:inline-block;margin-top:.8rem;font-size:.82rem;color:var(--accent);text-decoration:none;}
+.timeline-peatix-link:hover{text-decoration:underline;}
 .stat-chip{
   font-size:.75rem;padding:.25em .75em;border-radius:99px;
   background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;
@@ -505,6 +507,8 @@ nav{
 .final-cta-title{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:800;line-height:1.3;margin-bottom:.8rem;color:#111}
 .final-cta-sub{font-size:.95rem;color:#374151;max-width:480px;margin:0 auto 2rem}
 .final-cta-btns{display:flex;flex-direction:column;align-items:center;gap:.8rem}
+#final-cta .btn--outline{color:#111;border-color:#22c55e;}
+#final-cta .btn--outline:hover{background:#22c55e;color:#fff;}
 
 /* ================================================================
    FOOTER
@@ -537,7 +541,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
   <div class="nav-inner">
     <div class="nav-logo" id="nav-logo"></div>
     <div class="nav-cta">
-      <a id="nav-cta-btn" class="btn btn--primary" href="#" target="_blank" rel="noopener">ウェビナーを見る</a>
+      <a id="nav-cta-btn" class="btn btn--primary" href="#" target="_blank" rel="noopener">Peatixで申し込む</a>
     </div>
   </div>
 </nav>
@@ -553,7 +557,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
   <div class="hero-action-wrap">
     <div class="container">
       <div class="hero-cta-area">
-        <a id="hero-cta-btn" class="btn btn--primary btn--lg" href="#" target="_blank" rel="noopener">次回ウェビナーを見る →</a>
+        <a id="hero-cta-btn" class="btn btn--primary btn--lg" href="#" target="_blank" rel="noopener">Peatixで申し込む →</a>
         <a class="btn btn--outline-dark btn--lg" href="#history">過去開催を見る</a>
       </div>
       <div class="hero-stats" id="hero-stats"></div>
@@ -650,7 +654,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
     <h2 class="final-cta-title">まずは次回ウェビナーに<br>参加してみませんか？</h2>
     <p class="final-cta-sub">AI活用のヒントは、実践している人から学ぶのが最短です。</p>
     <div class="final-cta-btns">
-      <a id="final-cta-btn" class="btn btn--primary btn--lg" href="#" target="_blank" rel="noopener">Peatixで詳細を見る →</a>
+      <a id="final-cta-btn" class="btn btn--primary btn--lg" href="#" target="_blank" rel="noopener">Peatixで申し込む →</a>
       <a class="btn btn--outline" href="#members">メンバーを見る</a>
     </div>
   </div>
@@ -738,6 +742,7 @@ const PAST_EVENTS = [
     speaker: "かっちゃん",
     desc: "AI初心者でも30分でオリジナルスタンプが完成するハンズオン体験会。満足度93%を達成。",
     stats: ["参加者 25名", "満足度 93%"],
+    peatixUrl: "https://peatix.com/event/5000088",
   },
   {
     date: "2026.06",
@@ -750,7 +755,7 @@ const PAST_EVENTS = [
   {
     date: "2026.07",
     badge: { text: "予定", type: "yellow" },
-    title: "「その仕事、本当に社長がやる必要ありますか？」〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
+    title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
     speaker: "miomiu",
     desc: "元PC講師として業務整理を長年手がけてきたmiomiuが、「AIに興味はあるが自社の何に使えばいいかわからない」中小企業の社長向けに、業務棚卸しからAI活用を考える実践的な視点を解説予定。",
     stats: [],
@@ -763,7 +768,7 @@ const PAST_EVENTS = [
 const UPCOMING_SPEAKERS = [
   {
     name: "miomiu",
-    theme: "「その仕事、本当に社長がやる必要ありますか？」〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
+    theme: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
     desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けて登壇準備中。",
     date: "2026年7月（調整中）",
   },
@@ -881,7 +886,7 @@ const MEMBERS = [
     bio: "元PC講師として業務整理を長年手がけてきた実践者。難しいツールの話より「社長の業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の経営者向けに7月登壇準備中。",
     specialties: ["元PC講師", "業務整理・棚卸し", "中小企業AI活用"],
     achievements: [
-      "「その仕事、本当に社長がやる必要ありますか？」7月ウェビナー登壇準備中",
+      "その仕事、本当に社長がやる必要ありますか？7月ウェビナー登壇準備中",
     ],
     links: [],
   },
@@ -1041,6 +1046,7 @@ PAST_EVENTS.forEach(e => {
         <div class="timeline-speaker">登壇：${e.speaker}</div>
         <div class="timeline-desc">${e.desc}</div>
         ${statsHtml ? `<div class="timeline-stats">${statsHtml}</div>` : ''}
+        ${e.peatixUrl ? `<a href="${e.peatixUrl}" class="timeline-peatix-link" target="_blank" rel="noopener">Peatixページを見る →</a>` : ''}
       </div>
     </div>`);
 });
