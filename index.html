@@ -222,7 +222,7 @@ nav{
 }
 .about-icon img{width:100%;height:100%;object-fit:cover}
 .about-item h3{font-size:18px;font-weight:700;margin-bottom:.3rem;color:var(--text)}
-.about-item p{font-size:18px;color:var(--text2);line-height:1.6}
+.about-item p{font-size:15px;color:var(--text2);line-height:1.6}
 
 /* ================================================================
    TIMELINE
@@ -250,7 +250,7 @@ nav{
 .timeline-date{font-size:.75rem;color:var(--muted)}
 .timeline-title{font-size:1rem;font-weight:700;margin-bottom:.4rem;line-height:1.4;color:var(--text)}
 .timeline-speaker{font-size:16px;color:var(--accent);margin-bottom:.5rem}
-.timeline-desc{font-size:16px;color:var(--text2);line-height:1.6}
+.timeline-desc{font-size:15px;color:var(--text2);line-height:1.6}
 .timeline-stats{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
 .timeline-peatix-link{display:inline-block;margin-top:.8rem;font-size:16px;font-weight:700;color:#15803d;background:#f0fdf4;border:1.5px solid #22c55e;border-radius:8px;padding:.45em 1.1em;text-decoration:none;transition:background .2s,color .2s;}
 .timeline-peatix-link:hover{background:#22c55e;color:#fff;}
@@ -302,7 +302,7 @@ nav{
   display:flex;align-items:center;gap:.4rem;
   font-size:18px;font-weight:600;color:var(--text);margin-bottom:1rem;
 }
-.current-event-desc{font-size:16px;color:var(--text2);line-height:1.75;margin-bottom:1.4rem}
+.current-event-desc{font-size:15px;color:var(--text2);line-height:1.75;margin-bottom:1.4rem}
 .current-event-highlights{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.6rem}
 .highlight-item{
   display:flex;align-items:flex-start;gap:.6rem;
@@ -330,7 +330,7 @@ nav{
 }
 .upcoming-name{font-weight:700;font-size:18px;color:var(--text)}
 .upcoming-theme{font-size:18px;color:var(--accent);font-weight:600;margin:.2rem 0}
-.upcoming-desc{font-size:16px;color:var(--text2)}
+.upcoming-desc{font-size:15px;color:var(--text2)}
 
 /* ================================================================
    ABOUT SPECIALTIES
@@ -387,7 +387,7 @@ nav{
 }
 .join-icon{font-size:1.8rem;flex-shrink:0;margin-top:.1rem}
 .join-item h3{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:#111}
-.join-item p{font-size:18px;color:#374151;line-height:1.7}
+.join-item p{font-size:15px;color:#374151;line-height:1.7}
 
 /* ================================================================
    SECTION ALTERNATING BG  黒→白→黒→白...
@@ -450,7 +450,7 @@ nav{
 }
 .achievement-item{
   display:flex;align-items:flex-start;gap:.5rem;
-  font-size:16px;color:#374151;line-height:1.5;
+  font-size:15px;color:#374151;line-height:1.5;
   padding:.3rem 0;border-bottom:1px solid #e5e7eb;
 }
 .achievement-item:last-child{border-bottom:none}
@@ -567,7 +567,9 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 <section id="hero">
   <div class="hero-image-wrap">
     <picture>
+      <source media="(min-width:640px)" srcset="hero-pc.webp" type="image/webp" />
       <source media="(min-width:640px)" srcset="hero-pc.png" />
+      <source srcset="hero-sp.webp" type="image/webp" />
       <img src="hero-sp.png" alt="AI Stage - AI活用の実践者が集うコミュニティ" class="hero-img" />
     </picture>
   </div>
@@ -770,11 +772,11 @@ const PAST_EVENTS = [
     peatixUrl: "https://peatix.com/event/5038871",
   },
   {
-    date: "2026.07",
+    date: "2026.07.29",
     badge: { text: "予定", type: "yellow" },
     title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
     speaker: "miomiu",
-    desc: "元PC講師として業務整理を長年手がけてきたmiomiuが、「AIに興味はあるが自社の何に使えばいいかわからない」中小企業の社長向けに、業務棚卸しからAI活用を考える実践的な視点を解説予定。",
+    desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けて登壇予定。",
     stats: [],
   },
 ];
@@ -787,7 +789,7 @@ const UPCOMING_SPEAKERS = [
     name: "miomiu",
     theme: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
     desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けて登壇準備中。",
-    date: "2026年7月（調整中）",
+    date: "2026年7月29日（水）20:00〜",
   },
   {
     name: "守口 晋市",
@@ -832,7 +834,7 @@ const MEMBERS = [
     bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
     specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
     achievements: [
-      "2026年7月 Peatix登壇予定「その仕事、本当に社長がやる必要ありますか？」",
+      "2026年7月29日（水）20:00〜 Peatix登壇「その仕事、本当に社長がやる必要ありますか？」",
       "ソフトバンク主催ハッカソン 第3位入賞",
       "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
       "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
@@ -843,18 +845,23 @@ const MEMBERS = [
   },
   /* ── 3: 次々回登壇者 ── */
   {
-    name: "守口 晋市",
+    name: "守口晋市",
     handle: "守口さん",
     photo: "",
-    role: "Peatixページ作成・8月登壇予定",
+    role: "8月登壇予定",
     roleBadge: { text: "登壇予定", type: "yellow" },
-    bio: "25年超・多業種のシステム構築経験を活かした「AI時短セミナー」を企画中。Peatixイベントページ作成を担当し、チームのインフラを支える。",
-    specialties: ["業務効率化", "DX推進", "システム構築"],
+    bio: "中小企業の経営者・スタッフに向けて、現場で使えるAI時短術を伝授する25年WEBディレクターの実践派。「非エンジニア社員がアプリを作れる」まで、ただいま伴走中。",
+    specialties: ["中小企業伴走支援", "業務時短力", "AI社員", "Claude Code", "Codex"],
     achievements: [
-      "第1回PeatixイベントページのURL作成・設定",
-      "「9割削減——その差は時短力だった」ウェビナーを企画中（8月）",
+      "中小企業向けAIリテラシー講演・AI研修の実施",
+      "セキュリティを踏まえたAIリテラシー支援",
+      "システム開発・UIUXデザインの知見を活かしたAI導入支援",
+      "顧問契約にて社員のアプリ開発を伴走支援中",
+      "25年以上のIT業界経験・現場目線の実践支援",
     ],
-    links: [],
+    links: [
+      { label: "公式サイト", url: "https://accord-m.co.jp/jitanryoku/", primary: true },
+    ],
   },
   /* ── 4: 過去登壇者（新しい順）── */
   {
@@ -875,16 +882,15 @@ const MEMBERS = [
   },
   /* ── 5以降: 五十音順 ── */
   {
-    name: "川崎 陽子",
+    name: "川﨑 陽子",
     handle: "かわさきようこ",
     photo: "",
     role: "発起人・集客担当",
     roleBadge: { text: "運営", type: "accent" },
-    bio: "千葉県のゴルフ場経営者（スタッフ80名超）。社内AI推進を進めながら、千葉県経営品質協議会でのAI研修推進委員としても活動中。",
-    specialties: ["ゴルフ業界AI推進", "集客・広告", "中小企業AI研修"],
+    bio: "2020年に日本ディープラーニング協会のG検定合格。2025年GUGAの生成物パスポート合格。千葉県のゴルフ場を経営。AI活用による業務効率化、人手不足を解消すべく、ゴルフ界や中小企業団体のAI推進を担当。",
+    specialties: ["中小企業経営者目線", "AI導入", "社内推進", "NotebookLM", "Google Workspace"],
     achievements: [
-      "ゴルフ業界イベント「ゴルフ×AI」登壇",
-      "千葉県経営品質協議会 AI研修推進委員",
+      "アジア最大級のゴルフフェア2026で「ゴルフ×AI、ゴルフ界でのAI活用について」登壇",
     ],
     links: [],
   },
@@ -898,6 +904,7 @@ const MEMBERS = [
     specialties: ["AI活用業務効率化", "SEOライティング", "企業AI活用支援"],
     achievements: [
       "当コミュニティでのファシリテーター",
+      "ライティング実績：<a href=\"https://renever-korean.com/korean-finish-end-difference/\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent);word-break:break-all;\">renever-korean.com</a>",
     ],
     links: [
       { label: "X（Twitter）", url: "https://x.com/hickey_9999", primary: true },
@@ -923,11 +930,12 @@ const MEMBERS = [
     photo: "",
     role: "コミュニティ発起人",
     roleBadge: { text: "運営", type: "accent" },
-    bio: "超地方都市の小規模寺院の准坊守。AIを活用した寺院の自走・存続をゴールに活動中。",
-    specialties: ["コミュニティ設計", "人事・組織", "AI×寺院運営"],
+    bio: "北海道在住。現役の人事担当。小規模事業者・中小企業向けに、AIを活用した業務改善や情報整理、Webサイト制作を行っています。寺院向けAI活用支援やポータルサイトの企画・制作にも携わっています。",
+    specialties: ["AI導入支援", "業務効率化", "個人事業主・小規模事業者支援"],
     achievements: [
-      "第1回・第2回ウェビナーでチャットサポート担当",
-      "ポータルサイト（本サイト）を提案・設計",
+      "寺院向けポータルサイトを企画・制作",
+      "AIを活用した寺院運営支援",
+      "ウェビナーのチャットサポート担当",
     ],
     links: [],
   },
