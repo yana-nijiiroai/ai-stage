@@ -91,8 +91,8 @@ a:hover{opacity:.75}
   line-height:1.25;letter-spacing:-.02em;margin-bottom:.7rem;
   color:var(--text);
 }
-.section-desc{font-size:18px;color:var(--text2);max-width:560px}
-#about .section-desc{max-width:none;font-size:18px;}
+.section-desc{font-size:16px;color:var(--text2);max-width:560px}
+#about .section-desc{max-width:none;font-size:16px;}
 .section-note{font-size:.78rem;color:var(--muted);margin-top:.3rem}
 .section-header{margin-bottom:2.5rem}
 section{padding:5rem 0}
@@ -328,8 +328,8 @@ nav{
   display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:1.1rem;color:#fff;
 }
-.upcoming-name{font-weight:700;font-size:18px;color:var(--text)}
-.upcoming-theme{font-size:18px;color:var(--accent);font-weight:600;margin:.2rem 0}
+.upcoming-name{font-weight:700;font-size:16px;color:var(--text)}
+.upcoming-theme{font-size:15px;color:var(--accent);font-weight:600;margin:.2rem 0}
 .upcoming-desc{font-size:15px;color:var(--text2)}
 
 /* ================================================================
@@ -511,7 +511,7 @@ nav{
   border:1px solid var(--border);
 }
 .faq-item.open .faq-icon{transform:rotate(45deg)}
-.faq-a{display:none;padding:0 1.3rem 1.1rem;font-size:18px;color:var(--text2);line-height:1.75}
+.faq-a{display:none;padding:0 1.3rem 1.1rem;font-size:16px;color:var(--text2);line-height:1.75}
 .faq-item.open .faq-a{display:block}
 
 /* ================================================================
@@ -694,6 +694,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 ---------------------------------------------------------------- */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
+window.addEventListener('load', () => { history.replaceState(null, '', location.pathname); window.scrollTo(0, 0); });
 
 const SITE = {
   name: "AI Stage",
