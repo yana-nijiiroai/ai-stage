@@ -159,6 +159,19 @@ nav{
   width:100%;
   height:auto;
 }
+.reveal-image{position:relative;overflow:hidden;display:block;}
+.reveal-image::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;width:100%;height:100%;
+  background:#111711;
+  transform:translateX(0);
+  animation:revealAnim 1.2s cubic-bezier(0.77,0,0.175,1) forwards;
+}
+@keyframes revealAnim{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(101%);}
+}
 /* White action band below hero image */
 .hero-action-wrap{
   background:#fff;
@@ -248,7 +261,7 @@ nav{
 .timeline-card:hover{border-color:var(--accent)}
 .timeline-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem}
 .timeline-date{font-size:.75rem;color:var(--muted)}
-.timeline-title{font-size:1rem;font-weight:700;margin-bottom:.4rem;line-height:1.4;color:var(--text)}
+.timeline-title{font-size:18px;font-weight:700;margin-bottom:.4rem;line-height:1.4;color:var(--text)}
 .timeline-speaker{font-size:16px;color:var(--accent);margin-bottom:.5rem}
 .timeline-desc{font-size:15px;color:var(--text2);line-height:1.6}
 .timeline-stats{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
@@ -328,8 +341,8 @@ nav{
   display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:1.1rem;color:#fff;
 }
-.upcoming-name{font-weight:700;font-size:16px;color:var(--text)}
-.upcoming-theme{font-size:15px;color:var(--accent);font-weight:600;margin:.2rem 0}
+.upcoming-name{font-weight:700;font-size:18px;color:var(--text)}
+.upcoming-theme{font-size:18px;color:var(--accent);font-weight:600;margin:.2rem 0}
 .upcoming-desc{font-size:15px;color:var(--text2)}
 
 /* ================================================================
@@ -345,7 +358,7 @@ nav{
   background:var(--accent-xl);color:var(--accent2);
   border:1px solid var(--border2);
 }
-.about-etc{font-size:18px;color:var(--text2);margin-top:.4rem}
+.about-etc{font-size:16px;color:var(--text2);margin-top:.4rem}
 
 /* ================================================================
    THEMES
@@ -386,7 +399,7 @@ nav{
   box-shadow:var(--shadow);
 }
 .join-icon{font-size:1.8rem;flex-shrink:0;margin-top:.1rem}
-.join-item h3{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:#111}
+.join-item h3{font-size:18px;font-weight:700;margin-bottom:.4rem;color:#111}
 .join-item p{font-size:15px;color:#374151;line-height:1.7}
 
 /* ================================================================
@@ -396,7 +409,8 @@ nav{
 /* 2: History = 白 */
 #history{background:#fff}
 #history .section-title{color:#111}
-#history .section-desc{color:#374151}
+#history .section-desc{color:#374151;font-size:18px}
+#upcoming .section-desc{font-size:18px}
 #history .section-label{color:#16a34a}
 .timeline::before{background:#d1d5db}
 .timeline-card{background:#f9fafb;border-color:#e5e7eb}
@@ -433,7 +447,7 @@ nav{
   overflow:hidden;
 }
 .member-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
-.member-name{font-weight:800;font-size:1rem;line-height:1.2;color:#111}
+.member-name{font-weight:800;font-size:18px;line-height:1.2;color:#111}
 .member-handle{font-size:.78rem;color:#6b7280;margin-top:.15rem}
 .member-role-badge{margin-top:.3rem}
 .member-bio{font-size:16px;color:#374151;line-height:1.7;margin-bottom:1rem}
@@ -565,9 +579,9 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-image-wrap">
+  <div class="hero-image-wrap reveal-image">
     <picture>
-      <source media="(min-width:640px)" srcset="hero-p.png" />
+      <source media="(min-width:640px)" srcset="hero-pc.png" />
       <source srcset="hero-sp.webp" type="image/webp" />
       <img src="hero-sp.png" alt="AI Stage - AI活用の実践者が集うコミュニティ" class="hero-img" />
     </picture>
