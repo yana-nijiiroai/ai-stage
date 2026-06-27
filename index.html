@@ -563,6 +563,35 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 @media(min-width:900px){
   .members-grid{grid-template-columns:1fr 1fr 1fr}
 }
+
+/* ================================================================
+   SCROLL ANIMATIONS
+   ================================================================ */
+.fade-up{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .6s cubic-bezier(0.33,1,0.68,1),transform .6s cubic-bezier(0.33,1,0.68,1);
+}
+.fade-up.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+/* stagger delays set via JS with data-delay */
+.fade-up[data-delay="1"]{transition-delay:.08s}
+.fade-up[data-delay="2"]{transition-delay:.16s}
+.fade-up[data-delay="3"]{transition-delay:.24s}
+.fade-up[data-delay="4"]{transition-delay:.32s}
+.fade-up[data-delay="5"]{transition-delay:.40s}
+.fade-up[data-delay="6"]{transition-delay:.48s}
+.fade-up[data-delay="7"]{transition-delay:.56s}
+
+/* hover lift for about/upcoming/join cards */
+.about-item{transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition)}
+.about-item:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,197,94,.1)}
+.upcoming-card{transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition)}
+.upcoming-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,197,94,.08)}
+.join-item{transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition)}
+.join-item:hover{border-color:#22c55e;transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,197,94,.08)}
 </style>
 </head>
 <body>
@@ -581,7 +610,9 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 <section id="hero">
   <div class="hero-image-wrap reveal-image">
     <picture>
+      <source media="(min-width:640px)" srcset="hero-pc.webp" type="image/webp" />
       <source media="(min-width:640px)" srcset="hero-pc.png" />
+      <source srcset="hero-sp.webp" type="image/webp" />
       <img src="hero-sp.png" alt="AI Stage - AI活用の実践者が集うコミュニティ" class="hero-img" />
     </picture>
   </div>
@@ -705,6 +736,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 /* ----------------------------------------------------------------
    サイト基本情報
 ---------------------------------------------------------------- */
+
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 window.addEventListener('load', () => { history.replaceState(null, '', location.pathname); window.scrollTo(0, 0); });
@@ -1178,6 +1210,42 @@ FOOTER_LINKS.forEach(l => {
 });
 document.getElementById('footer-copy').textContent =
   `© ${new Date().getFullYear()} ${SITE.name}`;
+
+/* ----------------------------------------------------------------
+   スクロールアニメーション（IntersectionObserver）
+---------------------------------------------------------------- */
+(function(){
+  // 単体でフェードアップするもの
+  const soloObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('is-visible'); soloObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+
+  document.querySelectorAll('.section-header, .current-event-card, .timeline-item')
+    .forEach(el => { el.classList.add('fade-up'); soloObs.observe(el); });
+
+  // グリッド系：親が見えたら子を順番にスタッガー
+  const groupObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.fade-up').forEach((child, i) => {
+          setTimeout(() => child.classList.add('is-visible'), i * 80);
+        });
+        groupObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+  ['.about-grid', '.members-grid', '.upcoming-list', '.join-grid', '.faq-list']
+    .forEach(sel => {
+      const el = document.querySelector(sel);
+      if(!el) return;
+      el.querySelectorAll('.about-item, .member-card, .upcoming-card, .join-item, .faq-item')
+        .forEach(child => child.classList.add('fade-up'));
+      groupObs.observe(el);
+    });
+})();
 
 </script>
 </body>
