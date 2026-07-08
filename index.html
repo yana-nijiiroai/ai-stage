@@ -255,19 +255,19 @@ nav{
 /* ================================================================
    TIMELINE
    ================================================================ */
-.timeline{position:relative;padding-left:28px}
-.timeline::before{
-  content:'';position:absolute;left:10px;top:0;bottom:0;
-  width:2px;background:var(--border);
+.timeline-slider-wrap{position:relative}
+.timeline{
+  display:flex;gap:1.2rem;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:.5rem 2px 1.2rem;margin:0 -2px;
+  scrollbar-width:none;-ms-overflow-style:none;
 }
-.timeline-item{position:relative;margin-bottom:1.8rem}
-.timeline-item::before{
-  content:'';position:absolute;left:-24px;top:1.1rem;
-  width:12px;height:12px;border-radius:50%;
-  background:var(--accent);border:2px solid var(--bg);
-  box-shadow:0 0 0 3px var(--glow);
+.timeline::-webkit-scrollbar{display:none}
+.timeline-item{
+  position:relative;flex:0 0 auto;
+  width:82%;scroll-snap-align:start;
 }
 .timeline-card{
+  height:100%;
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--radius);padding:1.2rem 1.4rem;
   box-shadow:var(--shadow);
@@ -282,6 +282,35 @@ nav{
 .timeline-stats{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
 .timeline-peatix-link{display:inline-block;margin-top:.8rem;font-size:16px;font-weight:700;color:#15803d;background:#f0fdf4;border:1.5px solid #22c55e;border-radius:8px;padding:.45em 1.1em;text-decoration:none;transition:background .2s,color .2s;}
 .timeline-peatix-link:hover{background:#22c55e;color:#fff;}
+/* nav arrows */
+.timeline-nav-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border2);
+  color:var(--text);font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);transition:all var(--transition);z-index:2;
+}
+.timeline-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.timeline-nav-btn--prev{left:-8px}
+.timeline-nav-btn--next{right:-8px}
+.timeline-nav-btn[disabled]{opacity:.3;cursor:default;pointer-events:none}
+/* dots */
+.timeline-dots{display:flex;justify-content:center;gap:.5rem;margin-top:.3rem}
+.timeline-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--border2);border:none;cursor:pointer;padding:0;
+  transition:all var(--transition);
+}
+.timeline-dot.active{background:var(--accent);width:20px;border-radius:4px}
+@media(min-width:640px){
+  .timeline-item{width:46%}
+}
+@media(min-width:900px){
+  .timeline-item{width:31.5%}
+  .timeline-nav-btn--prev{left:-19px}
+  .timeline-nav-btn--next{right:-19px}
+}
 .stat-chip{
   font-size:.75rem;padding:.25em .75em;border-radius:99px;
   background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;
@@ -316,6 +345,11 @@ nav{
   color:var(--muted);font-size:.82rem;text-align:center;padding:1rem;
 }
 .current-event-image-placeholder span{font-size:2rem}
+.coming-soon-text{
+  font-size:clamp(1.6rem,5vw,2.4rem)!important;font-weight:900;
+  letter-spacing:.04em;color:var(--accent);
+  text-transform:uppercase;
+}
 .current-event-body{padding:1.8rem}
 .current-event-meta{
   display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem;
@@ -427,13 +461,16 @@ nav{
 #history .section-desc{color:#374151;font-size:18px}
 #upcoming .section-desc{font-size:18px}
 #history .section-label{color:#16a34a}
-.timeline::before{background:#d1d5db}
 .timeline-card{background:#f9fafb;border-color:#e5e7eb}
 .timeline-card:hover{border-color:#22c55e}
 .timeline-title{color:#111}
 .timeline-desc{color:#374151}
 .timeline-date{color:#6b7280}
 .timeline-speaker{color:#16a34a}
+.timeline-nav-btn{background:#fff;border-color:#e5e7eb;color:#111}
+.timeline-nav-btn:hover{border-color:#22c55e;color:#16a34a}
+.timeline-dot{background:#e5e7eb}
+.timeline-dot.active{background:#22c55e}
 
 /* 3: Current Event = 黒(dark) ← デフォルトのまま */
 
@@ -623,7 +660,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-image-wrap reveal-image anim-box kiran">
+  <div class="hero-image-wrap anim-box kiran">
     <picture>
       <source media="(min-width:640px)" srcset="hero-pc.webp" type="image/webp" />
       <source media="(min-width:640px)" srcset="hero-pc.png" />
@@ -662,7 +699,12 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
       <h2 class="section-title">開催実績</h2>
       <p class="section-desc">メンバーが登壇・予定している全イベントの一覧です。</p>
     </div>
-    <div class="timeline" id="timeline"></div>
+    <div class="timeline-slider-wrap">
+      <button class="timeline-nav-btn timeline-nav-btn--prev" id="timeline-prev" aria-label="前へ">‹</button>
+      <div class="timeline" id="timeline"></div>
+      <button class="timeline-nav-btn timeline-nav-btn--next" id="timeline-next" aria-label="次へ">›</button>
+    </div>
+    <div class="timeline-dots" id="timeline-dots"></div>
   </div>
 </section>
 
@@ -793,19 +835,19 @@ const CURRENT_EVENT = {
   closed: false,
   no: "",
   badge: "参加受付中",
-  image: "/event-gofuku.png",
-  imageAlt: "第2回ウェビナー：ごふくの日LP実装事例",
-  title: "ごふくの日LPで過去最高集客──AI×20時間の実装記／三代目本人登壇",
-  speaker: "Hitoshi Lab",
-  datetime: "2026年6月25日（木）21:00〜21:30",
-  desc: "呉服店のランディングページをAIで実装し、運用まで行ったリアルなプロジェクト実践記を公開します。クライアント本人もゲストとして登壇予定。アーカイブなしのライブ限定開催です。",
+  image: "",
+  imageAlt: "第3回ウェビナー：社長のためのAI時短術",
+  title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
+  speaker: "miomiu",
+  datetime: "2026年7月29日（水）20:00〜",
+  desc: "元PC講師として業務整理を軸に活動するmiomiuが登壇。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けてお届けします。",
   highlights: [
-    "AIを使った実際のLP制作プロセスを公開",
-    "クライアントとのやり取りや納品までの流れを解説",
-    "公開後のモニタリング・改善運用まで包括的に共有",
-    "クライアント本人がリアルな感想を語る対談形式",
+    "AI導入の前に「何を任せるか」を一緒に整理",
+    "難しいツールの話は一切なし・業務から考えるスタイル",
+    "1日10分から始められる具体的な一歩を紹介",
+    "IT担当者がいない中小企業でもすぐ実践できる内容",
   ],
-  peatixUrl: "https://peatix.com/event/5038871",
+  peatixUrl: "",
   note: "無料参加・顔出し不要・スマホ参加OK",
 };
 
@@ -813,6 +855,15 @@ const CURRENT_EVENT = {
    開催実績（タイムライン）
 ---------------------------------------------------------------- */
 const PAST_EVENTS = [
+  {
+    date: "2026.06",
+    badge: { text: "開催済み", type: "green" },
+    title: "ごふくの日LPで過去最高集客──AI×20時間の実装記／三代目本人登壇",
+    speaker: "Hitoshi Lab",
+    desc: "呉服店のLPをAIで実装し「ごふくの日」に過去最高集客を達成。三代目当主本人も登壇するリアルな対談形式。",
+    stats: [],
+    peatixUrl: "https://peatix.com/event/5038871",
+  },
   {
     date: "2026.05",
     badge: { text: "開催済み", type: "green" },
@@ -822,35 +873,12 @@ const PAST_EVENTS = [
     stats: [],
     peatixUrl: "https://peatix.com/event/5000088",
   },
-  {
-    date: "2026.06",
-    badge: { text: "受付中", type: "accent" },
-    title: "ごふくの日LPで過去最高集客──AI×20時間の実装記／三代目本人登壇",
-    speaker: "Hitoshi Lab",
-    desc: "呉服店のLPをAIで実装し「ごふくの日」に過去最高集客を達成。三代目当主本人も登壇するリアルな対談形式。",
-    stats: [],
-    peatixUrl: "https://peatix.com/event/5038871",
-  },
-  {
-    date: "2026.07.29",
-    badge: { text: "予定", type: "yellow" },
-    title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
-    speaker: "miomiu",
-    desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けて登壇予定。",
-    stats: [],
-  },
 ];
 
 /* ----------------------------------------------------------------
    今後の登壇予定
 ---------------------------------------------------------------- */
 const UPCOMING_SPEAKERS = [
-  {
-    name: "miomiu",
-    theme: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
-    desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けて登壇準備中。",
-    date: "2026年7月29日（水）20:00〜",
-  },
   {
     name: "守口 晋市",
     theme: "AI時短セミナー",
@@ -868,6 +896,25 @@ const UPCOMING_SPEAKERS = [
 const MEMBERS = [
   /* ── 1: 現在受付中の登壇者 ── */
   {
+    name: "miomiu",
+    handle: "miomiu",
+    photo: "",
+    role: "第3回登壇者",
+    roleBadge: { text: "登壇予定", type: "accent" },
+    bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
+    specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
+    achievements: [
+      "2026年7月29日（水）20:00〜 Peatix登壇「その仕事、本当に社長がやる必要ありますか？」",
+      "ソフトバンク主催ハッカソン 第3位入賞",
+      "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
+      "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
+    ],
+    links: [
+      { label: "公式サイト", url: "https://node-ai.jp", primary: true },
+    ],
+  },
+  /* ── 2: 過去登壇者 ── */
+  {
     name: "Hitoshi Lab",
     handle: "Hitoshi Lab",
     photo: "",
@@ -882,25 +929,6 @@ const MEMBERS = [
     ],
     links: [
       { label: "公式サイト", url: "https://fastidious-crostata-5713f7.netlify.app/", primary: true },
-    ],
-  },
-  /* ── 2: 次回登壇者 ── */
-  {
-    name: "miomiu",
-    handle: "miomiu",
-    photo: "",
-    role: "7月登壇予定",
-    roleBadge: { text: "登壇予定", type: "yellow" },
-    bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
-    specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
-    achievements: [
-      "2026年7月29日（水）20:00〜 Peatix登壇「その仕事、本当に社長がやる必要ありますか？」",
-      "ソフトバンク主催ハッカソン 第3位入賞",
-      "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
-      "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
-    ],
-    links: [
-      { label: "公式サイト", url: "https://node-ai.jp", primary: true },
     ],
   },
   /* ── 3: 次々回登壇者 ── */
@@ -1108,6 +1136,56 @@ PAST_EVENTS.forEach(e => {
     </div>`);
 });
 
+/* 開催実績スライダー制御 */
+(function(){
+  const track = document.getElementById('timeline');
+  const prevBtn = document.getElementById('timeline-prev');
+  const nextBtn = document.getElementById('timeline-next');
+  const dotsWrap = document.getElementById('timeline-dots');
+  const items = Array.from(track.children);
+  if(items.length === 0) return;
+
+  items.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'timeline-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `${i + 1}枚目へ`);
+    dot.addEventListener('click', () => items[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' }));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function updateActive(){
+    const trackRect = track.getBoundingClientRect();
+    let closest = 0, closestDist = Infinity;
+    items.forEach((item, i) => {
+      const dist = Math.abs(item.getBoundingClientRect().left - trackRect.left);
+      if(dist < closestDist){ closestDist = dist; closest = i; }
+    });
+    dots.forEach((d, i) => d.classList.toggle('active', i === closest));
+    prevBtn.disabled = closest === 0;
+    nextBtn.disabled = closest === items.length - 1;
+  }
+
+  let scrollTimer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(updateActive, 80);
+  });
+
+  prevBtn.addEventListener('click', () => {
+    const idx = dots.findIndex(d => d.classList.contains('active'));
+    const target = items[Math.max(0, idx - 1)];
+    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  });
+  nextBtn.addEventListener('click', () => {
+    const idx = dots.findIndex(d => d.classList.contains('active'));
+    const target = items[Math.min(items.length - 1, idx + 1)];
+    target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  });
+
+  updateActive();
+})();
+
 const ceEl = document.getElementById('current-event-card');
 if(CURRENT_EVENT.closed) {
   ceEl.innerHTML = `
@@ -1119,8 +1197,7 @@ if(CURRENT_EVENT.closed) {
   const imgHtml = CURRENT_EVENT.image
     ? `<img src="${CURRENT_EVENT.image}" alt="${CURRENT_EVENT.imageAlt}" />`
     : `<div class="current-event-image-placeholder">
-         <span>🖼</span>
-         <span>イベント画像（Peatixサムネイル）<br>URLをimageに入力してください</span>
+         <span class="coming-soon-text">Coming&nbsp;Soon</span>
        </div>`;
   const hlHtml = CURRENT_EVENT.highlights.map(h => `<div class="highlight-item">${h}</div>`).join('');
   ceEl.innerHTML = `
