@@ -95,7 +95,7 @@ a:hover{opacity:.75}
 #about .section-desc{max-width:none;font-size:16px;}
 .section-note{font-size:.78rem;color:var(--muted);margin-top:.3rem}
 .section-header{margin-bottom:2.5rem}
-section{padding:5rem 0}
+section{padding:5rem 0;scroll-margin-top:68px}
 section+section{border-top:1px solid var(--border)}
 
 /* ================================================================
@@ -133,12 +133,51 @@ nav{
   padding:.9rem 20px;
 }
 .nav-inner{
+  position:relative;
   max-width:900px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
 }
 .nav-logo{font-weight:800;font-size:1rem;color:var(--text)}
 .nav-logo span{color:var(--accent)}
-.nav-cta .btn{padding:.6em 1.2em;font-size:.85rem}
+.nav-right{display:flex;align-items:center;gap:.6rem}
+.nav-cta .btn,.nav-right .btn{padding:.6em 1.2em;font-size:.85rem}
+/* hamburger button */
+.nav-menu-btn{
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+  width:40px;height:40px;padding:9px;flex-shrink:0;
+  background:transparent;border:1px solid var(--border2);border-radius:8px;
+  cursor:pointer;transition:border-color var(--transition);
+}
+.nav-menu-btn:hover{border-color:var(--accent)}
+.nav-menu-btn span{
+  display:block;width:100%;height:2px;background:var(--text);border-radius:2px;
+  transition:transform .3s,opacity .3s;
+}
+.nav-menu-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-menu-btn.open span:nth-child(2){opacity:0}
+.nav-menu-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* dropdown menu */
+.nav-menu{
+  position:absolute;top:calc(100% + .9rem);right:0;
+  min-width:230px;
+  background:rgba(10,15,10,.98);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:0 14px 34px rgba(0,0,0,.5);
+  padding:.5rem;
+  display:flex;flex-direction:column;gap:.1rem;
+  opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity .25s,transform .25s,visibility .25s;
+  z-index:200;
+}
+.nav-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
+.nav-menu a{
+  padding:.7rem .9rem;border-radius:8px;
+  color:var(--text2);font-size:.92rem;font-weight:600;
+  transition:background var(--transition),color var(--transition);
+}
+.nav-menu a:hover{background:var(--surface2);color:var(--accent);opacity:1}
 
 /* ================================================================
    HERO
@@ -331,14 +370,14 @@ nav{
 .current-event-image{
   width:100%;
   aspect-ratio:16/7;
-  background:var(--accent-xl);
+  background:#f3e6d7;
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
   position:relative;
 }
 .current-event-image img{
-  width:100%;height:100%;object-fit:contain;background:#f9fdf9;
+  width:100%;height:100%;object-fit:contain;background:#f3e6d7;
 }
 .current-event-image-placeholder{
   display:flex;flex-direction:column;align-items:center;gap:.5rem;
@@ -652,8 +691,20 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 <nav>
   <div class="nav-inner">
     <div class="nav-logo" id="nav-logo"></div>
-    <div class="nav-cta">
+    <div class="nav-right">
       <a id="nav-cta-btn" class="btn btn--primary" href="#" target="_blank" rel="noopener">Peatixで申し込む</a>
+      <button class="nav-menu-btn" id="nav-menu-btn" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-menu" id="nav-menu">
+      <a href="#about">About</a>
+      <a href="#history">開催実績</a>
+      <a href="#current-event">受付中ウェビナー</a>
+      <a href="#members">登壇・運営メンバー</a>
+      <a href="#upcoming">今後の予定</a>
+      <a href="#join">参加方法</a>
+      <a href="#faq">よくある質問</a>
     </div>
   </div>
 </nav>
@@ -798,6 +849,23 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 window.addEventListener('load', () => { history.replaceState(null, '', location.pathname); window.scrollTo(0, 0); });
 
+/* ナビ ハンバーガーメニュー開閉 */
+(function(){
+  const btn = document.getElementById('nav-menu-btn');
+  const menu = document.getElementById('nav-menu');
+  if(!btn || !menu) return;
+  const close = () => { btn.classList.remove('open'); menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); };
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('click', (e) => { if(!menu.contains(e.target) && !btn.contains(e.target)) close(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') close(); });
+})();
+
 const SITE = {
   name: "AI Stage",
   logoText: "AI <span style='color:var(--accent)'>Stage</span>",
@@ -835,11 +903,11 @@ const CURRENT_EVENT = {
   closed: false,
   no: "",
   badge: "参加受付中",
-  image: "",
-  imageAlt: "第3回ウェビナー：社長のためのAI時短術",
+  image: "/event-miomiu.webp",
+  imageAlt: "第3回ウェビナー：AI、何から始める？まずは社長の仕事を整理する",
   title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
   speaker: "miomiu",
-  datetime: "2026年7月29日（水）20:00〜",
+  datetime: "2026年7月29日（水）20:00〜21:00",
   desc: "元PC講師として業務整理を軸に活動するmiomiuが登壇。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けてお届けします。",
   highlights: [
     "AI導入の前に「何を任せるか」を一緒に整理",
@@ -847,7 +915,7 @@ const CURRENT_EVENT = {
     "1日10分から始められる具体的な一歩を紹介",
     "IT担当者がいない中小企業でもすぐ実践できる内容",
   ],
-  peatixUrl: "",
+  peatixUrl: "https://peatix.com/event/5082507",
   note: "無料参加・顔出し不要・スマホ参加OK",
 };
 
@@ -904,7 +972,7 @@ const MEMBERS = [
     bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
     specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
     achievements: [
-      "2026年7月29日（水）20:00〜 Peatix登壇「その仕事、本当に社長がやる必要ありますか？」",
+      "2026年7月29日（水）20:00〜21:00 Peatix登壇「その仕事、本当に社長がやる必要ありますか？」",
       "ソフトバンク主催ハッカソン 第3位入賞",
       "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
       "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
@@ -975,7 +1043,7 @@ const MEMBERS = [
     photo: "",
     role: "発起人・集客担当",
     roleBadge: { text: "運営", type: "accent" },
-    bio: "2020年に日本ディープラーニング協会のG検定合格。2025年GUGAの生成物パスポート合格。千葉県のゴルフ場を経営。AI活用による業務効率化、人手不足を解消すべく、ゴルフ界や中小企業団体のAI推進を担当。",
+    bio: "2020年に日本ディープラーニング協会のG検定合格。2025年GUGAの生成AIパスポート合格。千葉県のゴルフ場を経営。AI活用による業務効率化、人手不足を解消すべく、ゴルフ界や中小企業団体のAI推進を担当。",
     specialties: ["中小企業経営者目線", "AI導入", "社内推進", "NotebookLM", "Google Workspace"],
     achievements: [
       "アジア最大級のゴルフフェア2026で「ゴルフ×AI、ゴルフ界でのAI活用について」登壇",
@@ -1013,16 +1081,16 @@ const MEMBERS = [
     links: [],
   },
   {
-    name: "やな",
-    handle: "やな",
+    name: "柳澤 桃子",
+    handle: "やなぎさわ ももこ",
     photo: "",
     role: "コミュニティ発起人",
     roleBadge: { text: "運営", type: "accent" },
-    bio: "北海道在住。現役の人事担当。小規模事業者・中小企業向けに、AIを活用した業務改善や情報整理、Webサイト制作を行っています。寺院向けAI活用支援やポータルサイトの企画・制作にも携わっています。",
-    specialties: ["AI導入支援", "業務効率化", "個人事業主・小規模事業者支援"],
+    bio: "北海道を拠点に、中小企業・個人事業主のAI業務改善を支援。人事・総務などバックオフィス業務の経験を活かし、メール返信・議事録・提案書づくりといった毎日の仕事を、人は判断に集中できる形に整えます。",
+    specialties: ["AI業務改善", "中小企業・個人事業主支援", "バックオフィス効率化"],
     achievements: [
-      "寺院向けポータルサイトを企画・制作",
-      "AIを活用した寺院運営支援",
+      "AI業務アプリ（メール返信・議事録・求人票・提案書）を制作・公開",
+      "寺院向けポータルサイトを企画・制作／AIを活用した寺院運営支援",
       "ウェビナーのチャットサポート担当",
     ],
     links: [],
@@ -1061,7 +1129,7 @@ const FAQ = [
 ---------------------------------------------------------------- */
 const HOW_TO_JOIN = [
   { title: "Peatixから申し込む", desc: "現在募集中のウェビナーはPeatixから参加できます。無料・顔出し不要・スマホでも参加OK。" },
-  { title: "SNSで最新情報をチェック", desc: "最新情報は各登壇者のSNSでも発信しています。気になるメンバーをフォローしてみてください。" },
+  { title: "メンバーの公式サイトをチェック", desc: "気になるメンバーの公式サイトから、活動内容や提供サービスを詳しく知れます。個別のご相談もそちらから。" },
 ];
 
 /* ----------------------------------------------------------------
