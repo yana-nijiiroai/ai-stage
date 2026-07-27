@@ -647,7 +647,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
   .about-grid{grid-template-columns:1fr 1fr}
   .members-grid{grid-template-columns:1fr 1fr}
   .testimonials-grid{grid-template-columns:1fr 1fr}
-  .current-event-cta{flex-direction:row}
+  .current-event-cta{flex-direction:row;justify-content:center}
   .final-cta-btns{flex-direction:row;justify-content:center}
   .join-grid{grid-template-columns:1fr 1fr}
 }
@@ -949,9 +949,10 @@ const PAST_EVENTS = [
 const UPCOMING_SPEAKERS = [
   {
     name: "守口 晋市",
-    theme: "AI時短セミナー",
-    desc: "25年超のシステム構築経験を活かし、業務を9割削減する「AI時短」の実践手法を解説予定。",
-    date: "2026年8月（調整中）",
+    theme: "【プログラミング不要・初心者OK】AIで“売れるLP”を自分で作れるようになる60分〜「申し込みが増える5つの心理設計」〜",
+    desc: "Webの現場に20年以上いる講師が、申し込みが生まれるLPに共通する「5つの心理設計」を解説。AIが教えてくれない“伝わる順番”を持ち帰れます。",
+    date: "2026年8月26日（水）20:00〜21:00",
+    peatixUrl: "https://jitanryoku0826.peatix.com/",
   },
 ];
 
@@ -972,7 +973,7 @@ const MEMBERS = [
     bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
     specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
     achievements: [
-      "2026年7月29日（水）20:00〜21:00 Peatix登壇「その仕事、本当に社長がやる必要ありますか？」",
+      "AI Stage第3回 登壇「その仕事、本当に社長がやる必要ありますか？」（2026/7/29）",
       "ソフトバンク主催ハッカソン 第3位入賞",
       "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
       "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
@@ -981,7 +982,27 @@ const MEMBERS = [
       { label: "公式サイト", url: "https://node-ai.jp", primary: true },
     ],
   },
-  /* ── 2: 過去登壇者 ── */
+  /* ── 2: 次々回登壇者 ── */
+  {
+    name: "守口晋市",
+    handle: "守口さん",
+    photo: "",
+    role: "第4回登壇者",
+    roleBadge: { text: "登壇予定", type: "accent" },
+    bio: "中小企業の経営者・スタッフに向けて、現場で使えるAI時短術を伝授する25年WEBディレクターの実践派。「非エンジニア社員がアプリを作れる」まで、ただいま伴走中。",
+    specialties: ["中小企業伴走支援", "業務時短力", "AI社員", "Claude Code", "Codex"],
+    achievements: [
+      "AI Stage第4回 登壇「AIで“売れるLP”を自分で作れるようになる60分」（2026/8/26）",
+      "中小企業向けAIリテラシー講演・AI研修の実施",
+      "セキュリティを踏まえたAIリテラシー支援",
+      "システム開発・UIUXデザインの知見を活かしたAI導入支援",
+      "顧問契約にて社員のアプリ開発を伴走支援中",
+    ],
+    links: [
+      { label: "公式サイト", url: "https://accord-m.co.jp/jitanryoku/", primary: true },
+    ],
+  },
+  /* ── 3: 過去登壇者（新しい順）── */
   {
     name: "Hitoshi Lab",
     handle: "Hitoshi Lab",
@@ -991,35 +1012,14 @@ const MEMBERS = [
     bio: "IT業界25年・金融基幹系出身のシニアPM/エンジニア。納期厳守とフィードバック設計、24時間以内応答を一貫して実践してきました。生成AI（Claude・Gemini・NotebookLM）を用いて「理論ではなく実クライアントの案件で動かす」ことを軸に、LP制作からAIセミナー登壇まで、作って終わりにしない伴走を信条としています。",
     specialties: ["AXコンサルタント", "生成AI実装", "HP/LP制作", "中小企業DX支援"],
     achievements: [
-      "AI Stage第2回 登壇「呉服店LP実装記 ─ AI×20時間+運用5日」(2026/6/25)",
-      "AI Stage第1回 サポート担当",
-      "AI体験会(NotebookLM)を主催・登壇 ─ 満足度4.60/5・理解度95%向上",
+      "AI Stage第2回 登壇「呉服店LP実装記 ─ AI×20時間+運用5日」（2026/6/25）",
+      "AI Stage ウェビナーチャットサポート",
+      "AI体験会（NotebookLM）を主催・登壇 ─ 満足度4.60/5・理解度95%向上",
     ],
     links: [
       { label: "公式サイト", url: "https://fastidious-crostata-5713f7.netlify.app/", primary: true },
     ],
   },
-  /* ── 3: 次々回登壇者 ── */
-  {
-    name: "守口晋市",
-    handle: "守口さん",
-    photo: "",
-    role: "8月登壇予定",
-    roleBadge: { text: "登壇予定", type: "yellow" },
-    bio: "中小企業の経営者・スタッフに向けて、現場で使えるAI時短術を伝授する25年WEBディレクターの実践派。「非エンジニア社員がアプリを作れる」まで、ただいま伴走中。",
-    specialties: ["中小企業伴走支援", "業務時短力", "AI社員", "Claude Code", "Codex"],
-    achievements: [
-      "中小企業向けAIリテラシー講演・AI研修の実施",
-      "セキュリティを踏まえたAIリテラシー支援",
-      "システム開発・UIUXデザインの知見を活かしたAI導入支援",
-      "顧問契約にて社員のアプリ開発を伴走支援中",
-      "25年以上のIT業界経験・現場目線の実践支援",
-    ],
-    links: [
-      { label: "公式サイト", url: "https://accord-m.co.jp/jitanryoku/", primary: true },
-    ],
-  },
-  /* ── 4: 過去登壇者（新しい順）── */
   {
     name: "勝又稔宏",
     handle: "かっちゃん",
@@ -1029,8 +1029,8 @@ const MEMBERS = [
     bio: "AIでマンガやLINEスタンプ作成を行なっています！",
     specialties: ["マンガ作成", "LINEスタンプ作成"],
     achievements: [
-      "第1回ウェビナー（LINEスタンプ作成）で登壇",
-      "地元自治体で子ども向けアプリ作成セミナー開催",
+      "AI Stage第1回 登壇「絵が描けなくてもOK！ChatGPTで作るオリジナルLINEスタンプ」（2026/5/28）",
+      "地元自治体で子ども向けアプリ作成セミナーを開催",
     ],
     links: [
       { label: "公式サイト", url: "https://bluecoding.jp/", primary: true },
@@ -1059,7 +1059,7 @@ const MEMBERS = [
     bio: "放送局の技術職正社員として30年以上の勤務を経て、セカンドキャリアのためにAI活用を始めました。ライティングからスタートして、オフライン講習会のサポート講師、オンライン講習会の講師など実績を積み上げ、今は企業のDX化を生成AIを活用して支援しています。",
     specialties: ["AI活用業務効率化", "SEOライティング", "企業AI活用支援"],
     achievements: [
-      "当コミュニティでのファシリテーター",
+      "AI Stage ファシリテーター（MTG進行）",
       "ライティング実績：<a href=\"https://renever-korean.com/korean-finish-end-difference/\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent);word-break:break-all;\">renever-korean.com</a>",
     ],
     links: [
@@ -1089,11 +1089,12 @@ const MEMBERS = [
     bio: "北海道を拠点に、中小企業・個人事業主のAI業務改善を支援。人事・総務などバックオフィス業務の経験を活かし、メール返信・議事録・提案書づくりといった毎日の仕事を、人は判断に集中できる形に整えます。",
     specialties: ["AI業務改善", "中小企業・個人事業主支援", "バックオフィス効率化"],
     achievements: [
-      "AI業務アプリ（メール返信・議事録・求人票・提案書）を制作・公開",
-      "寺院向けポータルサイトを企画・制作／AIを活用した寺院運営支援",
-      "ウェビナーのチャットサポート担当",
+      "「AI社員と働くオフィス」を制作・公開",
+      "AI Stage ウェビナーチャットサポート",
     ],
-    links: [],
+    links: [
+      { label: "公式サイト", url: "https://nijiiroai.com/", primary: true },
+    ],
   },
 ];
 
@@ -1300,6 +1301,7 @@ UPCOMING_SPEAKERS.forEach(s => {
         <div class="upcoming-theme">${s.theme}</div>
         <div class="upcoming-desc">${s.desc}</div>
         <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">🗓 ${s.date}</div>
+        ${s.peatixUrl ? `<a href="${s.peatixUrl}" class="timeline-peatix-link" target="_blank" rel="noopener">Peatixページを見る →</a>` : ''}
       </div>
     </div>`);
 });
