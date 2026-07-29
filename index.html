@@ -683,9 +683,85 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
 .upcoming-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,197,94,.08)}
 .join-item{transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition)}
 .join-item:hover{border-color:#22c55e;transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,197,94,.08)}
+
+/* ================================================================
+   OPENING REVEAL（静かなリビール）
+   幕 → 帯退場 → ヒーロー浮上 → CTAフェード
+   ================================================================ */
+body.loading{overflow:hidden}
+#loader{position:fixed;inset:0;z-index:9999}
+#loader .bar{
+  position:absolute;left:0;width:100%;height:17.2%;
+  background:var(--bg);
+  transition:transform .5s cubic-bezier(0.77,0,0.175,1);
+}
+#loader .bar:nth-child(1){top:0}
+#loader .bar:nth-child(2){top:16.6%}
+#loader .bar:nth-child(3){top:33.2%}
+#loader .bar:nth-child(4){top:49.8%}
+#loader .bar:nth-child(5){top:66.4%}
+#loader .bar:nth-child(6){top:83%}
+#loader.exit .bar{transform:translateX(101%)}
+#loader.exit .bar:nth-child(2){transition-delay:.06s}
+#loader.exit .bar:nth-child(3){transition-delay:.12s}
+#loader.exit .bar:nth-child(4){transition-delay:.18s}
+#loader.exit .bar:nth-child(5){transition-delay:.24s}
+#loader.exit .bar:nth-child(6){transition-delay:.3s}
+#loader .loader-logo{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-weight:800;font-size:clamp(1.8rem,6vw,2.8rem);color:var(--text);
+  letter-spacing:.05em;white-space:nowrap;
+  opacity:0;animation:loaderLogoIn .9s linear .15s forwards;
+}
+#loader .loader-logo em{font-style:normal;color:var(--accent)}
+#loader .loader-logo::after{
+  content:'';position:absolute;inset:-6px -14px;
+  background:var(--accent);transform:scaleX(0);transform-origin:0 50%;
+  animation:loaderWipe .9s cubic-bezier(0.77,0,0.175,1) .15s forwards;
+}
+#loader.exit .loader-logo{opacity:0;transition:opacity .25s;animation:none}
+@keyframes loaderLogoIn{0%,49%{opacity:0}51%,100%{opacity:1}}
+@keyframes loaderWipe{
+  0%{transform:scaleX(0);transform-origin:0 50%}
+  50%{transform:scaleX(1);transform-origin:0 50%}
+  50.01%{transform:scaleX(1);transform-origin:100% 50%}
+  100%{transform:scaleX(0);transform-origin:100% 50%}
+}
+/* ヒーロー画像を覆う同色カバー（消えると画像が浮かび上がる） */
+.hero-cover{
+  position:absolute;inset:0;z-index:5;background:var(--bg);
+  pointer-events:none;opacity:1;transition:opacity .6s ease .15s;
+}
+body.opened .hero-cover{opacity:0}
+/* CTA帯は最後に静かに追いつく */
+.hero-cta-area{
+  opacity:0;transform:translateY(12px);
+  transition:opacity .6s cubic-bezier(0.33,1,0.68,1) .5s,transform .6s cubic-bezier(0.33,1,0.68,1) .5s;
+}
+body.opened .hero-cta-area{opacity:1;transform:none}
+body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
+/* 見出しの行送り（マスクの中からせり上がる） */
+.section-title{overflow:hidden}
+.section-title .rise{
+  display:inline-block;transform:translateY(110%);opacity:0;
+  transition:transform .7s cubic-bezier(0.33,1,0.68,1),opacity .7s cubic-bezier(0.33,1,0.68,1);
+}
+.section-title.risen .rise{transform:none;opacity:1}
+@media (prefers-reduced-motion:reduce){
+  #loader{display:none}
+  .hero-cover{display:none}
+  .hero-cta-area,.fade-up,.section-title .rise{opacity:1!important;transform:none!important;transition:none!important}
+}
 </style>
 </head>
-<body>
+<body class="loading">
+
+<!-- OPENING LOADER -->
+<div id="loader" aria-hidden="true">
+  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+  <div class="loader-logo">AI <em>Stage</em></div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -718,6 +794,7 @@ footer{border-top:1px solid var(--border);padding:2rem 20px;text-align:center;fo
       <source srcset="hero-sp.webp" type="image/webp" />
       <img src="hero-sp.png" alt="AI Stage - AI活用の実践者が集うコミュニティ" class="hero-img" />
     </picture>
+    <div class="hero-cover"></div>
   </div>
   <div class="hero-action-wrap">
     <div class="container">
@@ -849,6 +926,27 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 window.addEventListener('load', () => { history.replaceState(null, '', location.pathname); window.scrollTo(0, 0); });
 
+/* 開幕リビール（幕 → 帯退場 → ヒーロー浮上 → CTA） */
+(function(){
+  const loader = document.getElementById('loader');
+  if(!loader) return;
+  const finish = (instant) => {
+    loader.remove();
+    document.body.classList.remove('loading');
+    if(instant) document.body.classList.add('instant');
+    document.body.classList.add('opened');
+  };
+  // 同一セッション2回目以降は幕をスキップ
+  if(sessionStorage.getItem('aistage_opened')){ finish(true); return; }
+  sessionStorage.setItem('aistage_opened', '1');
+  window.addEventListener('load', () => {
+    setTimeout(() => loader.classList.add('exit'), 1150); // ロゴのワイプ完了後に帯退場
+    setTimeout(() => finish(false), 1980);                // 退場完了 → ヒーロー浮上開始
+  });
+  // 保険：loadが極端に遅い場合も5秒で必ず開く
+  setTimeout(() => { if(document.getElementById('loader')) { loader.classList.add('exit'); setTimeout(() => finish(false), 830); } }, 5000);
+})();
+
 /* ナビ ハンバーガーメニュー開閉 */
 (function(){
   const btn = document.getElementById('nav-menu-btn');
@@ -903,19 +1001,19 @@ const CURRENT_EVENT = {
   closed: false,
   no: "",
   badge: "参加受付中",
-  image: "/event-miomiu.webp",
-  imageAlt: "第3回ウェビナー：AI、何から始める？まずは社長の仕事を整理する",
-  title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
-  speaker: "miomiu",
-  datetime: "2026年7月29日（水）20:00〜21:00",
-  desc: "元PC講師として業務整理を軸に活動するmiomiuが登壇。難しいツールの話より「業務から一緒に考える」スタイルで、AIが気になるけど何に使えばいいかわからない中小企業の社長さんへ向けてお届けします。",
+  image: "/event-moriguchi.webp",
+  imageAlt: "第4回ウェビナー：AIで売れるLPを自分で作れるようになる60分",
+  title: "【プログラミング不要・初心者OK】AIで“売れるLP”を自分で作れるようになる60分〜「申し込みが増える5つの心理設計」〜",
+  speaker: "守口晋市",
+  datetime: "2026年8月26日（水）20:00〜21:00",
+  desc: "Webの現場に20年以上いる守口晋市が登壇。きれいなのに申し込まれないLPの原因は、デザインの腕ではなく「申し込みたくなる心理」が設計されていないだけ。AIが教えてくれない、申し込みが生まれる5つの心理設計をタネ明かしします。",
   highlights: [
-    "AI導入の前に「何を任せるか」を一緒に整理",
-    "難しいツールの話は一切なし・業務から考えるスタイル",
-    "1日10分から始められる具体的な一歩を紹介",
-    "IT担当者がいない中小企業でもすぐ実践できる内容",
+    "AIが作る“それっぽいLP”に決まって欠けているものがわかる",
+    "同じ内容なのに反応が変わる、言葉の並べ方を解説",
+    "自分のページを見直せる5つのチェックポイントを持ち帰れる",
+    "ツール操作なし・初心者の方ほど安心して参加できる内容",
   ],
-  peatixUrl: "https://peatix.com/event/5082507",
+  peatixUrl: "https://jitanryoku0826.peatix.com/",
   note: "無料参加・顔出し不要・スマホ参加OK",
 };
 
@@ -923,6 +1021,15 @@ const CURRENT_EVENT = {
    開催実績（タイムライン）
 ---------------------------------------------------------------- */
 const PAST_EVENTS = [
+  {
+    date: "2026.07",
+    badge: { text: "開催済み", type: "green" },
+    title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
+    speaker: "miomiu",
+    desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIに任せられる仕事の見つけ方を中小企業の社長さんへ向けて解説。",
+    stats: [],
+    peatixUrl: "https://peatix.com/event/5082507",
+  },
   {
     date: "2026.06",
     badge: { text: "開催済み", type: "green" },
@@ -946,15 +1053,7 @@ const PAST_EVENTS = [
 /* ----------------------------------------------------------------
    今後の登壇予定
 ---------------------------------------------------------------- */
-const UPCOMING_SPEAKERS = [
-  {
-    name: "守口 晋市",
-    theme: "【プログラミング不要・初心者OK】AIで“売れるLP”を自分で作れるようになる60分〜「申し込みが増える5つの心理設計」〜",
-    desc: "Webの現場に20年以上いる講師が、申し込みが生まれるLPに共通する「5つの心理設計」を解説。AIが教えてくれない“伝わる順番”を持ち帰れます。",
-    date: "2026年8月26日（水）20:00〜21:00",
-    peatixUrl: "https://jitanryoku0826.peatix.com/",
-  },
-];
+const UPCOMING_SPEAKERS = [];
 
 /* ----------------------------------------------------------------
    メンバー一覧
@@ -964,25 +1063,6 @@ const UPCOMING_SPEAKERS = [
 ---------------------------------------------------------------- */
 const MEMBERS = [
   /* ── 1: 現在受付中の登壇者 ── */
-  {
-    name: "miomiu",
-    handle: "miomiu",
-    photo: "",
-    role: "第3回登壇者",
-    roleBadge: { text: "登壇予定", type: "accent" },
-    bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
-    specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
-    achievements: [
-      "AI Stage第3回 登壇「その仕事、本当に社長がやる必要ありますか？」（2026/7/29）",
-      "ソフトバンク主催ハッカソン 第3位入賞",
-      "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
-      "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
-    ],
-    links: [
-      { label: "公式サイト", url: "https://node-ai.jp", primary: true },
-    ],
-  },
-  /* ── 2: 次々回登壇者 ── */
   {
     name: "守口晋市",
     handle: "守口さん",
@@ -1002,7 +1082,25 @@ const MEMBERS = [
       { label: "公式サイト", url: "https://accord-m.co.jp/jitanryoku/", primary: true },
     ],
   },
-  /* ── 3: 過去登壇者（新しい順）── */
+  /* ── 2: 過去登壇者（新しい順）── */
+  {
+    name: "miomiu",
+    handle: "miomiu",
+    photo: "",
+    role: "第3回登壇者",
+    roleBadge: { text: "登壇済", type: "green" },
+    bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
+    specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
+    achievements: [
+      "AI Stage第3回 登壇「その仕事、本当に社長がやる必要ありますか？」（2026/7/29）",
+      "ソフトバンク主催ハッカソン 第3位入賞",
+      "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
+      "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
+    ],
+    links: [
+      { label: "公式サイト", url: "https://node-ai.jp", primary: true },
+    ],
+  },
   {
     name: "Hitoshi Lab",
     handle: "Hitoshi Lab",
@@ -1384,8 +1482,20 @@ document.getElementById('footer-copy').textContent =
     });
   }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
 
-  document.querySelectorAll('.section-header, .current-event-card, .timeline-item')
+  // 見出し以外（ラベル・説明文・カード）は静かなフェード
+  document.querySelectorAll('.section-header > *:not(.section-title), .current-event-card, .timeline-item')
     .forEach(el => { el.classList.add('fade-up'); soloObs.observe(el); });
+
+  // セクション見出しはマスクの中から行送りでせり上げる
+  const titleObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('risen'); titleObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.4, rootMargin: '0px 0px -20px 0px' });
+  document.querySelectorAll('.section-title').forEach(t => {
+    t.innerHTML = '<span class="rise">' + t.innerHTML + '</span>';
+    titleObs.observe(t);
+  });
 
   // グリッド系：親が見えたら子を順番にスタッガー
   const groupObs = new IntersectionObserver((entries) => {
