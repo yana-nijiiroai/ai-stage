@@ -711,13 +711,13 @@ body.loading{overflow:hidden}
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   font-weight:800;font-size:clamp(1.8rem,6vw,2.8rem);color:var(--text);
   letter-spacing:.05em;white-space:nowrap;
-  opacity:0;animation:loaderLogoIn .9s linear .15s forwards;
+  opacity:0;animation:loaderLogoIn 1.4s linear .2s forwards;
 }
 #loader .loader-logo em{font-style:normal;color:var(--accent)}
 #loader .loader-logo::after{
   content:'';position:absolute;inset:-6px -14px;
   background:var(--accent);transform:scaleX(0);transform-origin:0 50%;
-  animation:loaderWipe .9s cubic-bezier(0.77,0,0.175,1) .15s forwards;
+  animation:loaderWipe 1.4s cubic-bezier(0.77,0,0.175,1) .2s forwards;
 }
 #loader.exit .loader-logo{opacity:0;transition:opacity .25s;animation:none}
 @keyframes loaderLogoIn{0%,49%{opacity:0}51%,100%{opacity:1}}
@@ -727,16 +727,29 @@ body.loading{overflow:hidden}
   50.01%{transform:scaleX(1);transform-origin:100% 50%}
   100%{transform:scaleX(0);transform-origin:100% 50%}
 }
-/* ヒーロー画像を覆う同色カバー（消えると画像が浮かび上がる） */
-.hero-cover{
-  position:absolute;inset:0;z-index:5;background:var(--bg);
-  pointer-events:none;opacity:1;transition:opacity .6s ease .15s;
+/* ヒーロー画像を覆う同色カバー（横帯7本が上から順に右へ抜けて段々に現れる） */
+.hero-cover{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.hero-cover span{
+  position:absolute;left:-1%;right:-1%;background:var(--bg);
+  transition:transform .7s cubic-bezier(0.77,0,0.175,1);
 }
-body.opened .hero-cover{opacity:0}
+.hero-cover span:nth-child(1){top:0;height:14.8%;transition-delay:.1s}
+.hero-cover span:nth-child(2){top:14.28%;height:14.8%;transition-delay:.18s}
+.hero-cover span:nth-child(3){top:28.57%;height:14.8%;transition-delay:.26s}
+.hero-cover span:nth-child(4){top:42.85%;height:14.8%;transition-delay:.34s}
+.hero-cover span:nth-child(5){top:57.14%;height:14.8%;transition-delay:.42s}
+.hero-cover span:nth-child(6){top:71.42%;height:14.8%;transition-delay:.5s}
+.hero-cover span:nth-child(7){top:85.71%;height:14.4%;transition-delay:.58s}
+body.opened .hero-cover span{transform:translateX(102%)}
+body.instant .hero-cover span{transition:none}
+/* 画像はわずかに拡大した状態から静かに沈み込んで定位置へ */
+.hero-img{transform:scale(1.06);transition:transform 1.2s cubic-bezier(0.33,1,0.68,1) .1s}
+body.opened .hero-img{transform:scale(1)}
+body.instant .hero-img{transition:none;transform:none}
 /* CTA帯は最後に静かに追いつく */
 .hero-cta-area{
   opacity:0;transform:translateY(12px);
-  transition:opacity .6s cubic-bezier(0.33,1,0.68,1) .5s,transform .6s cubic-bezier(0.33,1,0.68,1) .5s;
+  transition:opacity .6s cubic-bezier(0.33,1,0.68,1) .65s,transform .6s cubic-bezier(0.33,1,0.68,1) .65s;
 }
 body.opened .hero-cta-area{opacity:1;transform:none}
 body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
@@ -750,7 +763,7 @@ body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
 @media (prefers-reduced-motion:reduce){
   #loader{display:none}
   .hero-cover{display:none}
-  .hero-cta-area,.fade-up,.section-title .rise{opacity:1!important;transform:none!important;transition:none!important}
+  .hero-cta-area,.hero-img,.fade-up,.section-title .rise{opacity:1!important;transform:none!important;transition:none!important}
 }
 </style>
 </head>
@@ -794,7 +807,7 @@ body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
       <source srcset="hero-sp.webp" type="image/webp" />
       <img src="hero-sp.png" alt="AI Stage - AI活用の実践者が集うコミュニティ" class="hero-img" />
     </picture>
-    <div class="hero-cover"></div>
+    <div class="hero-cover"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
   </div>
   <div class="hero-action-wrap">
     <div class="container">
@@ -940,8 +953,8 @@ window.addEventListener('load', () => { history.replaceState(null, '', location.
   if(sessionStorage.getItem('aistage_opened')){ finish(true); return; }
   sessionStorage.setItem('aistage_opened', '1');
   window.addEventListener('load', () => {
-    setTimeout(() => loader.classList.add('exit'), 1150); // ロゴのワイプ完了後に帯退場
-    setTimeout(() => finish(false), 1980);                // 退場完了 → ヒーロー浮上開始
+    setTimeout(() => loader.classList.add('exit'), 1900); // ロゴのワイプ完了後に帯退場
+    setTimeout(() => finish(false), 2750);                // 退場完了 → ヒーロー浮上開始
   });
   // 保険：loadが極端に遅い場合も5秒で必ず開く
   setTimeout(() => { if(document.getElementById('loader')) { loader.classList.add('exit'); setTimeout(() => finish(false), 830); } }, 5000);
@@ -1053,7 +1066,14 @@ const PAST_EVENTS = [
 /* ----------------------------------------------------------------
    今後の登壇予定
 ---------------------------------------------------------------- */
-const UPCOMING_SPEAKERS = [];
+const UPCOMING_SPEAKERS = [
+  {
+    name: "柳澤 桃子",
+    theme: "「うちにAIはまだ早い」と思ったら、聞いてほしい45分——不安をほどいて、1つの業務から始めるAI入門（ワーク付き）",
+    desc: "「難しそう」「うちには関係ない」という不安をほどきながら、まずは1つの業務からAIを試す方法をワーク付きで一緒に整理します。",
+    date: "2026年9月30日（水）21:00〜22:00",
+  },
+];
 
 /* ----------------------------------------------------------------
    メンバー一覧
@@ -1082,7 +1102,25 @@ const MEMBERS = [
       { label: "公式サイト", url: "https://accord-m.co.jp/jitanryoku/", primary: true },
     ],
   },
-  /* ── 2: 過去登壇者（新しい順）── */
+  /* ── 2: 次の次の登壇者 ── */
+  {
+    name: "柳澤 桃子",
+    handle: "やなぎさわ ももこ",
+    photo: "",
+    role: "第5回登壇者",
+    roleBadge: { text: "登壇予定", type: "yellow" },
+    bio: "北海道を拠点に、中小企業・個人事業主のAI業務改善を支援。人事・総務などバックオフィス業務の経験を活かし、メール返信・議事録・提案書づくりといった毎日の仕事を、人は判断に集中できる形に整えます。",
+    specialties: ["AI業務改善", "中小企業・個人事業主支援", "バックオフィス効率化"],
+    achievements: [
+      "AI Stage第5回 登壇「『うちにAIはまだ早い』と思ったら、聞いてほしい45分」（2026/9/30）",
+      "「AI社員と働くオフィス」を制作・公開",
+      "AI Stage ウェビナーチャットサポート",
+    ],
+    links: [
+      { label: "公式サイト", url: "https://nijiiroai.com/", primary: true },
+    ],
+  },
+  /* ── 3: 過去登壇者（新しい順）── */
   {
     name: "miomiu",
     handle: "miomiu",
@@ -1177,22 +1215,6 @@ const MEMBERS = [
       "美容室クライアントの業務改善を支援中",
     ],
     links: [],
-  },
-  {
-    name: "柳澤 桃子",
-    handle: "やなぎさわ ももこ",
-    photo: "",
-    role: "コミュニティ発起人",
-    roleBadge: { text: "運営", type: "accent" },
-    bio: "北海道を拠点に、中小企業・個人事業主のAI業務改善を支援。人事・総務などバックオフィス業務の経験を活かし、メール返信・議事録・提案書づくりといった毎日の仕事を、人は判断に集中できる形に整えます。",
-    specialties: ["AI業務改善", "中小企業・個人事業主支援", "バックオフィス効率化"],
-    achievements: [
-      "「AI社員と働くオフィス」を制作・公開",
-      "AI Stage ウェビナーチャットサポート",
-    ],
-    links: [
-      { label: "公式サイト", url: "https://nijiiroai.com/", primary: true },
-    ],
   },
 ];
 
