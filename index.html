@@ -1075,7 +1075,15 @@ const PAST_EVENTS = [
 /* ----------------------------------------------------------------
    今後の登壇予定
 ---------------------------------------------------------------- */
-const UPCOMING_SPEAKERS = [];
+const UPCOMING_SPEAKERS = [
+  {
+    name: "勝又 稔宏",
+    theme: "はじめてAIでアプリを作る教室",
+    desc: "プログラミング知識ゼロでOK。スマホのClaudeに「こんなアプリを作って」と伝えながら、「姓名占いアプリ」と「ブロック崩しゲーム」を45分で実際に作ります。",
+    date: "2026年10月29日（木）20:00〜21:00",
+    peatixUrl: "https://peatix.com/event/5195231",
+  },
+];
 
 /* ----------------------------------------------------------------
    メンバー一覧
@@ -1102,7 +1110,25 @@ const MEMBERS = [
       { label: "公式サイト", url: "https://nijiiroai.com/", primary: true },
     ],
   },
-  /* ── 2: 過去登壇者（新しい順）── */
+  /* ── 2: 次の次の登壇者 ── */
+  {
+    name: "勝又稔宏",
+    handle: "かっちゃん",
+    photo: "",
+    role: "第6回登壇者",
+    roleBadge: { text: "登壇予定", type: "yellow" },
+    bio: "AIでマンガやLINEスタンプ作成を行なっています！",
+    specialties: ["マンガ作成", "LINEスタンプ作成"],
+    achievements: [
+      "AI Stage第6回 登壇「はじめてAIでアプリを作る教室」（2026/10/29）",
+      "AI Stage第1回 登壇「絵が描けなくてもOK！ChatGPTで作るオリジナルLINEスタンプ」（2026/5/28）",
+      "地元自治体で子ども向けアプリ作成セミナーを開催",
+    ],
+    links: [
+      { label: "公式サイト", url: "https://bluecoding.jp/", primary: true },
+    ],
+  },
+  /* ── 3: 過去登壇者（新しい順）── */
   {
     name: "守口晋市",
     handle: "守口さん",
@@ -1155,22 +1181,6 @@ const MEMBERS = [
     ],
     links: [
       { label: "公式サイト", url: "https://fastidious-crostata-5713f7.netlify.app/", primary: true },
-    ],
-  },
-  {
-    name: "勝又稔宏",
-    handle: "かっちゃん",
-    photo: "",
-    role: "第1回登壇者",
-    roleBadge: { text: "登壇済", type: "green" },
-    bio: "AIでマンガやLINEスタンプ作成を行なっています！",
-    specialties: ["マンガ作成", "LINEスタンプ作成"],
-    achievements: [
-      "AI Stage第1回 登壇「絵が描けなくてもOK！ChatGPTで作るオリジナルLINEスタンプ」（2026/5/28）",
-      "地元自治体で子ども向けアプリ作成セミナーを開催",
-    ],
-    links: [
-      { label: "公式サイト", url: "https://bluecoding.jp/", primary: true },
     ],
   },
   /* ── 5以降: 五十音順 ── */
