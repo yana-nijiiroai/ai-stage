@@ -360,6 +360,7 @@ nav{
    ================================================================ */
 #current-event{background:var(--bg2)}
 .current-event-card{
+  position:relative;
   background:var(--surface);
   border:2px solid var(--accent);
   border-radius:var(--radius-lg);
@@ -411,6 +412,14 @@ nav{
 }
 .highlight-item::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:.1rem}
 .current-event-cta{display:flex;flex-direction:column;gap:.8rem}
+.current-event-link::after{content:"";position:absolute;inset:0;z-index:1;cursor:pointer;border-radius:var(--radius-lg)}
+.current-event-link,.current-event-link:hover{position:static;transform:none}
+.upcoming-card{position:relative}
+.upcoming-group-link::after{content:"";position:absolute;inset:0;z-index:1;cursor:pointer;border-radius:var(--radius)}
+.upcoming-group-link:focus-visible::after{outline:3px solid var(--accent);outline-offset:-4px}
+.current-event-cta .btn--outline{position:relative;z-index:2}
+.current-event-link:focus-visible::after{outline:3px solid var(--accent);outline-offset:-5px}
+.current-event-card:has(.current-event-link:hover){box-shadow:0 8px 32px rgba(34,197,94,.28)}
 .cta-note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:.4rem}
 
 /* ================================================================
@@ -765,6 +774,17 @@ body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
   .hero-cover{display:none}
   .hero-cta-area,.hero-img,.fade-up,.section-title .rise{opacity:1!important;transform:none!important;transition:none!important}
 }
+/* Private preview: clearer event information */
+.current-event-title{font-size:clamp(1.5rem,4vw,2.3rem);line-height:1.4}
+.current-event-datetime{display:block;font-size:clamp(1.05rem,2.4vw,1.35rem);font-weight:800;background:rgba(34,197,94,.12);border-left:4px solid var(--accent);padding:.85rem 1rem;border-radius:8px;line-height:1.7}
+.current-event-body{padding:clamp(1.25rem,4vw,2.5rem)}
+.current-event-cta .btn--primary{min-height:56px;font-size:18px;font-weight:800;padding:1rem 1.7rem;box-shadow:0 6px 24px rgba(34,197,94,.2)}
+.current-event-cta{justify-content:flex-start}
+.cta-note{font-size:14px;color:var(--text2);line-height:1.7;text-align:left;margin-top:1rem}
+.upcoming-date{font-size:17px;font-weight:700;color:var(--text);margin-top:.8rem;line-height:1.7}
+.timeline-date{font-size:15px;color:var(--text2);font-weight:600}
+.current-event-no{font-size:14px;color:var(--text2)}
+@media(max-width:639px){#current-event .section-title{font-size:24px;line-height:1.5}.current-event-cta .btn{width:100%;text-align:center}.current-event-datetime{padding:.75rem}.upcoming-card{padding:1.25rem;gap:1rem}}
 </style>
 </head>
 <body class="loading">
@@ -832,23 +852,6 @@ body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
   </div>
 </section>
 
-<!-- TIMELINE -->
-<section id="history">
-  <div class="container">
-    <div class="section-header">
-      <p class="section-label">Timeline</p>
-      <h2 class="section-title">開催実績</h2>
-      <p class="section-desc">メンバーが登壇・予定している全イベントの一覧です。</p>
-    </div>
-    <div class="timeline-slider-wrap">
-      <button class="timeline-nav-btn timeline-nav-btn--prev" id="timeline-prev" aria-label="前へ">‹</button>
-      <div class="timeline" id="timeline"></div>
-      <button class="timeline-nav-btn timeline-nav-btn--next" id="timeline-next" aria-label="次へ">›</button>
-    </div>
-    <div class="timeline-dots" id="timeline-dots"></div>
-  </div>
-</section>
-
 <!-- CURRENT EVENT -->
 <section id="current-event">
   <div class="container">
@@ -859,6 +862,25 @@ body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
     <div id="current-event-card"></div>
   </div>
 </section>
+
+<!-- TIMELINE -->
+<section id="history">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Timeline</p>
+      <h2 class="section-title">開催実績</h2>
+      <p class="section-desc">これまでに開催したウェビナーの一覧です。</p>
+    </div>
+    <div class="timeline-slider-wrap">
+      <button class="timeline-nav-btn timeline-nav-btn--prev" id="timeline-prev" aria-label="前へ">‹</button>
+      <div class="timeline" id="timeline"></div>
+      <button class="timeline-nav-btn timeline-nav-btn--next" id="timeline-next" aria-label="次へ">›</button>
+    </div>
+    <div class="timeline-dots" id="timeline-dots"></div>
+  </div>
+</section>
+
+
 
 <!-- MEMBERS (メインコンテンツ) -->
 <section id="members">
@@ -1011,23 +1033,22 @@ const ABOUT = {
    closed: true にすると「次回準備中」に切り替わります
 ---------------------------------------------------------------- */
 const CURRENT_EVENT = {
-  closed: false,
-  no: "",
-  badge: "参加受付中",
-  image: "/event-yanagisawa.webp",
-  imageAlt: "第5回ウェビナー：「うちにAIはまだ早い」と思ったら、聞いてほしい45分",
-  title: "「うちにAIはまだ早い」と思ったら、聞いてほしい45分——不安をほどいて、1つの業務から始めるAI入門（ワーク付き）",
-  speaker: "柳澤桃子",
-  datetime: "2026年9月30日（水）20:00〜21:00",
-  desc: "北海道・道北で中小企業・個人事業主の「AIとの仕事の分担」を支援する柳澤桃子が登壇。AIの操作を覚える講座ではなく、はじめての方がつまずきやすい3つの不安をひとつずつほどきながら、「自社のどの仕事ならAIに任せられるか」をご自身の手で仕分けするワーク付きの入門編です。",
-  highlights: [
-    "「難しそう」「情報がこわい」「何から始めれば」の3つの不安をほどく",
-    "自社の「仕事の仕分け表」が1枚、手元に残るワーク付き",
-    "情報を「渡す・渡さない」の線引きの考え方がわかる",
-    "申込者には後日録画をお届け・当日参加できなくてもOK",
+  "closed": false,
+  "no": "第6回",
+  "badge": "参加受付中",
+  "image": "/kacchan-5195231-banner.png",
+  "imageAlt": "はじめてAIでアプリを作る教室の告知画像：スマートフォンを持つ子どものイラスト",
+  "title": "はじめてAIでアプリを作る教室",
+  "speaker": "勝又稔宏（かっちゃん）",
+  "datetime": "2026年10月29日（木）20:00〜21:00",
+  "desc": "プログラミング知識ゼロでOK。スマホのClaudeに「こんなアプリを作って」と伝えながら、「姓名占いアプリ」と「ブロック崩しゲーム」を45分で実際に作ります。",
+  "highlights": [
+    "プログラミングの知識不要・AI初心者歓迎",
+    "スマートフォンのClaudeで、実際に動くアプリを作成",
+    "姓名占いアプリとブロック崩しゲームの2つを体験"
   ],
-  peatixUrl: "https://peatix.com/event/5130594",
-  note: "無料参加・顔出し不要・スマホ参加OK",
+  "peatixUrl": "https://peatix.com/event/5195231",
+  "note": "オンライン開催・無料チケットあり／アーカイブ・PDF資料取得チケット：500円"
 };
 
 /* ----------------------------------------------------------------
@@ -1035,41 +1056,65 @@ const CURRENT_EVENT = {
 ---------------------------------------------------------------- */
 const PAST_EVENTS = [
   {
-    date: "2026.08",
-    badge: { text: "開催済み", type: "green" },
-    title: "【Claude Code・Codexにも使える／初心者OK】AIが作ったLPを、売れるLPに変える5つの心理設計",
-    speaker: "守口晋市",
-    desc: "AIが作ったLPを申し込みにつながる形へ近づける「5つの心理設計」を、Webの現場に20年以上携わるディレクターが解説。どのAIツールにも役立つ“人間の見る目”を共有。",
-    stats: [],
-    peatixUrl: "https://jitanryoku0826.peatix.com/",
+    "date": "2026.09",
+    "badge": {
+      "text": "開催済み",
+      "type": "green"
+    },
+    "title": "「うちにAIはまだ早い」と思ったら、聞いてほしい45分——不安をほどいて、1つの業務から始めるAI入門（ワーク付き）",
+    "speaker": "柳澤桃子",
+    "desc": "北海道・道北で中小企業・個人事業主の「AIとの仕事の分担」を支援する柳澤桃子が登壇。AIの操作を覚える講座ではなく、はじめての方がつまずきやすい3つの不安をひとつずつほどきながら、「自社のどの仕事ならAIに任せられるか」をご自身の手で仕分けするワーク付きの入門編です。",
+    "stats": [],
+    "peatixUrl": "https://peatix.com/event/5130594"
   },
   {
-    date: "2026.07",
-    badge: { text: "開催済み", type: "green" },
-    title: "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
-    speaker: "miomiu",
-    desc: "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIに任せられる仕事の見つけ方を中小企業の社長さんへ向けて解説。",
-    stats: [],
-    peatixUrl: "https://peatix.com/event/5082507",
+    "date": "2026.08",
+    "badge": {
+      "text": "開催済み",
+      "type": "green"
+    },
+    "title": "【Claude Code・Codexにも使える／初心者OK】AIが作ったLPを、売れるLPに変える5つの心理設計",
+    "speaker": "守口晋市",
+    "desc": "AIが作ったLPを申し込みにつながる形へ近づける「5つの心理設計」を、Webの現場に20年以上携わるディレクターが解説。どのAIツールにも役立つ“人間の見る目”を共有。",
+    "stats": [],
+    "peatixUrl": "https://jitanryoku0826.peatix.com/"
   },
   {
-    date: "2026.06",
-    badge: { text: "開催済み", type: "green" },
-    title: "ごふくの日LPで過去最高集客──AI×20時間の実装記／三代目本人登壇",
-    speaker: "Hitoshi Lab",
-    desc: "呉服店のLPをAIで実装し「ごふくの日」に過去最高集客を達成。三代目当主本人も登壇するリアルな対談形式。",
-    stats: [],
-    peatixUrl: "https://peatix.com/event/5038871",
+    "date": "2026.07",
+    "badge": {
+      "text": "開催済み",
+      "type": "green"
+    },
+    "title": "その仕事、本当に社長がやる必要ありますか？〜1日10分から始める、AIに任せられる仕事の見つけ方〜",
+    "speaker": "miomiu",
+    "desc": "元PC講師として業務整理を軸に活動。難しいツールの話より「業務から一緒に考える」スタイルで、AIに任せられる仕事の見つけ方を中小企業の社長さんへ向けて解説。",
+    "stats": [],
+    "peatixUrl": "https://peatix.com/event/5082507"
   },
   {
-    date: "2026.05",
-    badge: { text: "開催済み", type: "green" },
-    title: "絵が描けなくてもOK！ChatGPTで作るオリジナルLINEスタンプ",
-    speaker: "勝又稔宏",
-    desc: "AI初心者でも30分でオリジナルスタンプが完成するハンズオン体験会。満足度93%を達成。",
-    stats: [],
-    peatixUrl: "https://peatix.com/event/5000088",
+    "date": "2026.06",
+    "badge": {
+      "text": "開催済み",
+      "type": "green"
+    },
+    "title": "ごふくの日LPで過去最高集客──AI×20時間の実装記／三代目本人登壇",
+    "speaker": "Hitoshi Lab",
+    "desc": "呉服店のLPをAIで実装し「ごふくの日」に過去最高集客を達成。三代目当主本人も登壇するリアルな対談形式。",
+    "stats": [],
+    "peatixUrl": "https://peatix.com/event/5038871"
   },
+  {
+    "date": "2026.05",
+    "badge": {
+      "text": "開催済み",
+      "type": "green"
+    },
+    "title": "絵が描けなくてもOK！ChatGPTで作るオリジナルLINEスタンプ",
+    "speaker": "勝又稔宏",
+    "desc": "AI初心者でも30分でオリジナルスタンプが完成するハンズオン体験会。満足度93%を達成。",
+    "stats": [],
+    "peatixUrl": "https://peatix.com/event/5000088"
+  }
 ];
 
 /* ----------------------------------------------------------------
@@ -1077,12 +1122,13 @@ const PAST_EVENTS = [
 ---------------------------------------------------------------- */
 const UPCOMING_SPEAKERS = [
   {
-    name: "勝又 稔宏",
-    theme: "はじめてAIでアプリを作る教室",
-    desc: "プログラミング知識ゼロでOK。スマホのClaudeに「こんなアプリを作って」と伝えながら、「姓名占いアプリ」と「ブロック崩しゲーム」を45分で実際に作ります。",
-    date: "2026年10月29日（木）20:00〜21:00",
-    peatixUrl: "https://peatix.com/event/5195231",
-  },
+    "name": "ひっきー",
+    "theme": "「入れたあとが本番」— Google Workspace × 業務分解",
+    "desc": "",
+    "date": "2026年11月25日（水）20:00開始（60分予定）",
+    "groupUrl": "https://hickey-aipartner.peatix.com/",
+    "peatixUrl": ""
+  }
 ];
 
 /* ----------------------------------------------------------------
@@ -1092,141 +1138,226 @@ const UPCOMING_SPEAKERS = [
    links: { label, url, primary:true/false } の配列
 ---------------------------------------------------------------- */
 const MEMBERS = [
-  /* ── 1: 現在受付中の登壇者 ── */
   {
-    name: "柳澤 桃子",
-    handle: "やなぎさわ ももこ",
-    photo: "",
-    role: "第5回登壇者",
-    roleBadge: { text: "登壇予定", type: "accent" },
-    bio: "北海道を拠点に、中小企業・個人事業主のAI業務改善を支援。人事・総務などバックオフィス業務の経験を活かし、メール返信・議事録・提案書づくりといった毎日の仕事を、人は判断に集中できる形に整えます。",
-    specialties: ["AI業務改善", "中小企業・個人事業主支援", "バックオフィス効率化"],
-    achievements: [
-      "AI Stage第5回 登壇「『うちにAIはまだ早い』と思ったら、聞いてほしい45分」（2026/9/30）",
-      "「AI社員と働くオフィス」を制作・公開",
-      "AI Stage ウェビナーチャットサポート",
+    "name": "勝又稔宏",
+    "handle": "かっちゃん",
+    "photo": "",
+    "role": "第6回登壇者",
+    "roleBadge": {
+      "text": "登壇予定",
+      "type": "accent"
+    },
+    "bio": "AIでマンガやLINEスタンプ、アプリ作成を行なっています！",
+    "specialties": [
+      "マンガ作成",
+      "LINEスタンプ作成",
+      "アプリ作成"
     ],
-    links: [
-      { label: "公式サイト", url: "https://nijiiroai.com/", primary: true },
-    ],
-  },
-  /* ── 2: 次の次の登壇者 ── */
-  {
-    name: "勝又稔宏",
-    handle: "かっちゃん",
-    photo: "",
-    role: "第6回登壇者",
-    roleBadge: { text: "登壇予定", type: "yellow" },
-    bio: "AIでマンガやLINEスタンプ、アプリ作成を行なっています！",
-    specialties: ["マンガ作成", "LINEスタンプ作成", "アプリ作成"],
-    achievements: [
+    "achievements": [
       "AI Stage第6回 登壇「はじめてAIでアプリを作る教室」（2026/10/29）",
       "AI Stage第1回 登壇「絵が描けなくてもOK！ChatGPTで作るオリジナルLINEスタンプ」（2026/5/28）",
-      "地元自治体で子ども向けアプリ作成セミナーを開催",
+      "地元自治体で子ども向けアプリ作成セミナーを開催"
     ],
-    links: [
-      { label: "公式サイト", url: "https://bluecoding.jp/", primary: true },
-    ],
+    "links": [
+      {
+        "label": "公式サイト",
+        "url": "https://bluecoding.jp/",
+        "primary": true
+      }
+    ]
   },
-  /* ── 3: 過去登壇者（新しい順）── */
   {
-    name: "守口晋市",
-    handle: "守口さん",
-    photo: "",
-    role: "第4回登壇者",
-    roleBadge: { text: "登壇済", type: "green" },
-    bio: "中小企業の経営者・スタッフに向けて、現場で使えるAI時短術を伝授する25年WEBディレクターの実践派。「非エンジニア社員がアプリを作れる」まで、ただいま伴走中。",
-    specialties: ["中小企業伴走支援", "業務時短力", "AI社員", "Claude Code", "Codex"],
-    achievements: [
+    "name": "ひっきー",
+    "handle": "ひっきー",
+    "photo": "",
+    "role": "11月登壇予定・ファシリテーター",
+    "roleBadge": {
+      "text": "登壇予定",
+      "type": "yellow"
+    },
+    "bio": "放送局の技術職正社員として30年以上の勤務を経て、セカンドキャリアのためにAI活用を始めました。ライティングからスタートして、オフライン講習会のサポート講師、オンライン講習会の講師など実績を積み上げ、今は企業のDX化を生成AIを活用して支援しています。",
+    "specialties": [
+      "AI活用業務効率化",
+      "SEOライティング",
+      "企業AI活用支援"
+    ],
+    "achievements": [
+      "AI Stage ファシリテーター（MTG進行）",
+      "ライティング実績：<a href=\"https://renever-korean.com/korean-finish-end-difference/\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent);word-break:break-all;\">renever-korean.com</a>"
+    ],
+    "links": [
+      {
+        "label": "X（Twitter）",
+        "url": "https://x.com/hickey_9999",
+        "primary": true
+      }
+    ]
+  },
+  {
+    "name": "柳澤 桃子",
+    "handle": "やなぎさわ ももこ",
+    "photo": "",
+    "role": "第5回登壇者",
+    "roleBadge": {
+      "text": "登壇済",
+      "type": "green"
+    },
+    "bio": "北海道を拠点に、中小企業・個人事業主のAI業務改善を支援。人事・総務などバックオフィス業務の経験を活かし、メール返信・議事録・提案書づくりといった毎日の仕事を、人は判断に集中できる形に整えます。",
+    "specialties": [
+      "AI業務改善",
+      "中小企業・個人事業主支援",
+      "バックオフィス効率化"
+    ],
+    "achievements": [
+      "AI Stage第5回 登壇「『うちにAIはまだ早い』と思ったら、聞いてほしい45分」（2026/9/30）",
+      "「AI社員と働くオフィス」を制作・公開",
+      "AI Stage ウェビナーチャットサポート"
+    ],
+    "links": [
+      {
+        "label": "公式サイト",
+        "url": "https://nijiiroai.com/",
+        "primary": true
+      }
+    ]
+  },
+  {
+    "name": "守口晋市",
+    "handle": "守口さん",
+    "photo": "",
+    "role": "第4回登壇者",
+    "roleBadge": {
+      "text": "登壇済",
+      "type": "green"
+    },
+    "bio": "中小企業の経営者・スタッフに向けて、現場で使えるAI時短術を伝授する25年WEBディレクターの実践派。「非エンジニア社員がアプリを作れる」まで、ただいま伴走中。",
+    "specialties": [
+      "中小企業伴走支援",
+      "業務時短力",
+      "AI社員",
+      "Claude Code",
+      "Codex"
+    ],
+    "achievements": [
       "AI Stage第4回 登壇「AIが作ったLPを、売れるLPに変える5つの心理設計」（2026/8/26）",
       "中小企業向けAIリテラシー講演・AI研修の実施",
       "セキュリティを踏まえたAIリテラシー支援",
       "システム開発・UIUXデザインの知見を活かしたAI導入支援",
-      "顧問契約にて社員のアプリ開発を伴走支援中",
+      "顧問契約にて社員のアプリ開発を伴走支援中"
     ],
-    links: [
-      { label: "公式サイト", url: "https://accord-m.co.jp/jitanryoku/", primary: true },
-    ],
+    "links": [
+      {
+        "label": "公式サイト",
+        "url": "https://accord-m.co.jp/jitanryoku/",
+        "primary": true
+      }
+    ]
   },
   {
-    name: "miomiu",
-    handle: "miomiu",
-    photo: "",
-    role: "第3回登壇者",
-    roleBadge: { text: "登壇済", type: "green" },
-    bio: "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
-    specialties: ["中小企業支援", "業務整理", "社外AI担当", "AI導入支援", "事務効率化", "ITサポート", "PC講師"],
-    achievements: [
+    "name": "miomiu",
+    "handle": "miomiu",
+    "photo": "",
+    "role": "第3回登壇者",
+    "roleBadge": {
+      "text": "登壇済",
+      "type": "green"
+    },
+    "bio": "IT担当者がいない中小企業の「社外AI担当」として、業務整理からAI活用の定着までを支援しています。ITサポート・PC講師の経験を活かし、ツール導入ありきではなく、まず業務を整理してから。事務作業に追われる時間を減らし、経営者が本業に集中できる環境づくりを伴走します。「AIに興味はあるけれど、何から始めればいいか分からない」そんな方の最初の一歩を一緒に整理します。",
+    "specialties": [
+      "中小企業支援",
+      "業務整理",
+      "社外AI担当",
+      "AI導入支援",
+      "事務効率化",
+      "ITサポート",
+      "PC講師"
+    ],
+    "achievements": [
       "AI Stage第3回 登壇「その仕事、本当に社長がやる必要ありますか？」（2026/7/29）",
       "ソフトバンク主催ハッカソン 第3位入賞",
       "ITサポート・PC講師として、初心者向けのPC操作・業務効率化をサポート",
-      "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施",
+      "IT担当者がいない中小企業向けに、業務整理から始めるAI活用支援を実施"
     ],
-    links: [
-      { label: "公式サイト", url: "https://node-ai.jp", primary: true },
-    ],
+    "links": [
+      {
+        "label": "公式サイト",
+        "url": "https://node-ai.jp",
+        "primary": true
+      }
+    ]
   },
   {
-    name: "Hitoshi Lab",
-    handle: "Hitoshi Lab",
-    photo: "",
-    role: "第2回登壇者",
-    roleBadge: { text: "登壇済", type: "green" },
-    bio: "IT業界25年・金融業界の基幹系システム出身のシニアPM/エンジニア。納期厳守とフィードバック設計、24時間以内応答を一貫して実践してきました。生成AI（Claude・Gemini・NotebookLM）を用いて「理論ではなく実クライアントの案件で動かす」ことを軸に、LP制作からAIセミナー登壇まで、作って終わりにしない伴走を信条としています。",
-    specialties: ["AXコンサルタント", "生成AI実装", "HP/LP制作", "中小企業DX支援"],
-    achievements: [
+    "name": "Hitoshi Lab",
+    "handle": "Hitoshi Lab",
+    "photo": "",
+    "role": "第2回登壇者",
+    "roleBadge": {
+      "text": "登壇済",
+      "type": "green"
+    },
+    "bio": "IT業界25年・金融業界の基幹系システム出身のシニアPM/エンジニア。納期厳守とフィードバック設計、24時間以内応答を一貫して実践してきました。生成AI（Claude・Gemini・NotebookLM）を用いて「理論ではなく実クライアントの案件で動かす」ことを軸に、LP制作からAIセミナー登壇まで、作って終わりにしない伴走を信条としています。",
+    "specialties": [
+      "AXコンサルタント",
+      "生成AI実装",
+      "HP/LP制作",
+      "中小企業DX支援"
+    ],
+    "achievements": [
       "AI Stage第2回 登壇「呉服店LP実装記 ─ AI×20時間+運用5日」（2026/6/25）",
       "AI Stage ウェビナーチャットサポート",
-      "AI体験会（NotebookLM）を主催・登壇 ─ 満足度4.60/5・理解度95%向上",
+      "AI体験会（NotebookLM）を主催・登壇 ─ 満足度4.60/5・理解度95%向上"
     ],
-    links: [
-      { label: "公式サイト", url: "https://fastidious-crostata-5713f7.netlify.app/", primary: true },
-    ],
-  },
-  /* ── 5以降: 五十音順 ── */
-  {
-    name: "川﨑 陽子",
-    handle: "かわさきようこ",
-    photo: "",
-    role: "発起人・集客担当",
-    roleBadge: { text: "運営", type: "accent" },
-    bio: "2020年に日本ディープラーニング協会のG検定合格。2025年GUGAの生成AIパスポート合格。千葉県のゴルフ場を経営。AI活用による業務効率化、人手不足を解消すべく、ゴルフ界や中小企業団体のAI推進を担当。",
-    specialties: ["中小企業経営者目線", "AI導入", "社内推進", "NotebookLM", "Google Workspace"],
-    achievements: [
-      "アジア最大級のゴルフフェア2026で「ゴルフ×AI、ゴルフ界でのAI活用について」登壇",
-    ],
-    links: [],
+    "links": [
+      {
+        "label": "公式サイト",
+        "url": "https://fastidious-crostata-5713f7.netlify.app/",
+        "primary": true
+      }
+    ]
   },
   {
-    name: "ひっきー",
-    handle: "ひっきー",
-    photo: "",
-    role: "ファシリテーター・MTG進行",
-    roleBadge: { text: "運営", type: "accent" },
-    bio: "放送局の技術職正社員として30年以上の勤務を経て、セカンドキャリアのためにAI活用を始めました。ライティングからスタートして、オフライン講習会のサポート講師、オンライン講習会の講師など実績を積み上げ、今は企業のDX化を生成AIを活用して支援しています。",
-    specialties: ["AI活用業務効率化", "SEOライティング", "企業AI活用支援"],
-    achievements: [
-      "AI Stage ファシリテーター（MTG進行）",
-      "ライティング実績：<a href=\"https://renever-korean.com/korean-finish-end-difference/\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent);word-break:break-all;\">renever-korean.com</a>",
+    "name": "川﨑 陽子",
+    "handle": "かわさきようこ",
+    "photo": "",
+    "role": "発起人・集客担当",
+    "roleBadge": {
+      "text": "運営",
+      "type": "accent"
+    },
+    "bio": "2020年に日本ディープラーニング協会のG検定合格。2025年GUGAの生成AIパスポート合格。千葉県のゴルフ場を経営。AI活用による業務効率化、人手不足を解消すべく、ゴルフ界や中小企業団体のAI推進を担当。",
+    "specialties": [
+      "中小企業経営者目線",
+      "AI導入",
+      "社内推進",
+      "NotebookLM",
+      "Google Workspace"
     ],
-    links: [
-      { label: "X（Twitter）", url: "https://x.com/hickey_9999", primary: true },
+    "achievements": [
+      "アジア最大級のゴルフフェア2026で「ゴルフ×AI、ゴルフ界でのAI活用について」登壇"
     ],
+    "links": []
   },
   {
-    name: "みさき",
-    handle: "みさき",
-    photo: "",
-    role: "メンバー",
-    roleBadge: { text: "運営", type: "accent" },
-    bio: "富山を拠点に個人事業主向けのAI業務改善・コンサルとして活動中。「地方で働く人が雑務から解放され、やりたいことに集中できる」をビジョンに、美容室など小規模事業者の業務効率化を支援しています。",
-    specialties: ["AIコンサル", "業務効率化", "個人事業主支援"],
-    achievements: [
+    "name": "みさき",
+    "handle": "みさき",
+    "photo": "",
+    "role": "メンバー",
+    "roleBadge": {
+      "text": "運営",
+      "type": "accent"
+    },
+    "bio": "富山を拠点に個人事業主向けのAI業務改善・コンサルとして活動中。「地方で働く人が雑務から解放され、やりたいことに集中できる」をビジョンに、美容室など小規模事業者の業務効率化を支援しています。",
+    "specialties": [
+      "AIコンサル",
+      "業務効率化",
+      "個人事業主支援"
+    ],
+    "achievements": [
       "AI初心者向け作業会を主催・開催",
-      "美容室クライアントの業務改善を支援中",
+      "美容室クライアントの業務改善を支援中"
     ],
-    links: [],
-  },
+    "links": []
+  }
 ];
 
 /* ----------------------------------------------------------------
@@ -1252,7 +1383,7 @@ const FAQ = [
   { q: "専門知識は必要ですか？", a: "不要です。各ウェビナーは、その分野の専門知識がなくても内容を理解できるよう設計されています。" },
   { q: "アーカイブはありますか？", a: "イベントごとに異なります。アーカイブが提供される場合はPeatixページにてご案内します。" },
   { q: "顔出しは必要ですか？", a: "不要です。カメラオフでもご参加いただけます。チャットでのご質問も大歓迎です。" },
-  { q: "参加費はかかりますか？", a: "無料ウェビナーとして開催しています。Peatixより事前申込みが必要です。" },
+  { q: "参加費はかかりますか？", a: "参加費はイベント・チケットごとに異なります。現在のウェビナーは無料チケットと、アーカイブ・PDF資料取得チケット（500円）があります。詳細はPeatixをご確認ください。" },
   { q: "どんな内容のウェビナーが開催されますか？", a: "メンバーの専門分野に応じて、LINEスタンプ制作・LP実装・法律×AI・介護業界のAI活用など多様なテーマで開催しています。毎回テーマが異なります。" },
 ];
 
@@ -1414,7 +1545,7 @@ if(CURRENT_EVENT.closed) {
         <p class="current-event-desc">${CURRENT_EVENT.desc}</p>
         <div class="current-event-highlights">${hlHtml}</div>
         <div class="current-event-cta">
-          <a href="${CURRENT_EVENT.peatixUrl}" class="btn btn--primary btn--lg" target="_blank" rel="noopener">Peatixで申し込む →</a>
+          <a href="${CURRENT_EVENT.peatixUrl}" class="btn btn--primary btn--lg current-event-link">Peatixのページを見る →</a>
           <a href="#members" class="btn btn--outline">登壇者プロフィールを見る</a>
         </div>
         <p class="cta-note">${CURRENT_EVENT.note}</p>
@@ -1431,8 +1562,8 @@ UPCOMING_SPEAKERS.forEach(s => {
         <div class="upcoming-name">${s.name}</div>
         <div class="upcoming-theme">${s.theme}</div>
         <div class="upcoming-desc">${s.desc}</div>
-        <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">🗓 ${s.date}</div>
-        ${s.peatixUrl ? `<a href="${s.peatixUrl}" class="timeline-peatix-link" target="_blank" rel="noopener">Peatixページを見る →</a>` : ''}
+        <div class="upcoming-date">🗓 ${s.date}</div>
+        ${s.peatixUrl ? `<a href="${s.peatixUrl}" class="timeline-peatix-link">Peatixのページを見る →</a>` : s.groupUrl ? `<a href="${s.groupUrl}" class="timeline-peatix-link upcoming-group-link">Peatixのページを見る →</a><p class="cta-note">グループ紹介ページ・申込準備中</p>` : ''}
       </div>
     </div>`);
 });
