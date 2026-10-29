@@ -785,6 +785,7 @@ body.instant .hero-cover,body.instant .hero-cta-area{transition:none}
 .timeline-date{font-size:15px;color:var(--text2);font-weight:600}
 .current-event-no{font-size:14px;color:var(--text2)}
 @media(max-width:639px){#current-event .section-title{font-size:24px;line-height:1.5}.current-event-cta .btn{width:100%;text-align:center}.current-event-datetime{padding:.75rem}.upcoming-card{padding:1.25rem;gap:1rem}}
+.member-link-btn:is([href="https://hickey-aipartner.peatix.com/"],[href="https://x.com/hickey_9999"]),.member-link-btn:is([href="https://hickey-aipartner.peatix.com/"],[href="https://x.com/hickey_9999"]):visited,.member-link-btn:is([href="https://hickey-aipartner.peatix.com/"],[href="https://x.com/hickey_9999"]):hover{color:#166534;border-color:#166534}
 </style>
 </head>
 <body class="loading">
@@ -1123,11 +1124,18 @@ const PAST_EVENTS = [
 const UPCOMING_SPEAKERS = [
   {
     "name": "ひっきー",
-    "theme": "「入れたあとが本番」— Google Workspace × 業務分解",
-    "desc": "",
+    "theme": "Google Workspace、入れたあとが本番 ― 一緒に「業務分解」して、自分で使いこなせるようになる60分",
+    "desc": "Google Workspaceを入れたけれど、メールと予定にしか使っていない。そんな会社や職場のための60分です。道具の機能紹介ではなく、「毎回同じ形でやっている作業」を書き出す・分ける・当てはめるの3ステップで分解し、スプレッドシート・Gmail・フォームとGeminiに当てはめていく様子を、実際の画面でお見せします。",
     "date": "2026年11月25日（水）20:00〜21:00",
     "groupUrl": "https://hickey-aipartner.peatix.com/",
-    "peatixUrl": ""
+    "peatixUrl": "https://workspace1125.peatix.com/",
+    "venue": "Google Meet・無料",
+    "highlights": [
+      "個人のGoogleアカウントと、会社のWorkspaceアカウントの違いがわかる",
+      "架空の会社の「月末の請求の取りまとめ」を、実演で減らしていく",
+      "作った仕組みが使われ続けるコツと、料金の考え方がわかる",
+      "ご希望の方に、後日録画と料金の早見表をお届け"
+    ]
   }
 ];
 
@@ -1175,17 +1183,25 @@ const MEMBERS = [
       "text": "登壇予定",
       "type": "yellow"
     },
-    "bio": "放送局の技術職正社員として30年以上の勤務を経て、セカンドキャリアのためにAI活用を始めました。ライティングからスタートして、オフライン講習会のサポート講師、オンライン講習会の講師など実績を積み上げ、今は企業のDX化を生成AIを活用して支援しています。",
+    "bio": "制作現場の技術マネジメントを本業としながら、セカンドキャリアに向けてAI活用を始めました。現場で「毎回同じ形で書いて送る連絡」を一つずつ仕組みにし、3つ合わせて月約10時間（概算）の手間を減らしてきました。今は、企業向けのAI研修の講師や、業務を書き出して道具に当てはめる「業務分解」の伴走で、使いこなせるようになるまでを支援しています。",
     "specialties": [
-      "AI活用業務効率化",
-      "SEOライティング",
-      "企業AI活用支援"
+      "業務分解",
+      "Google Workspace活用",
+      "AI研修講師",
+      "中小企業のAI活用支援"
     ],
     "achievements": [
+      "AI Stage 第7回 登壇予定「Google Workspace、入れたあとが本番」（2026/11/25）",
       "AI Stage ファシリテーター（MTG進行）",
-      "ライティング実績：<a href=\"https://renever-korean.com/korean-finish-end-difference/\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--accent);word-break:break-all;\">renever-korean.com</a>"
+      "企業向けAI研修 講師",
+      "X「シニア世代のAI日記」発信中"
     ],
     "links": [
+      {
+        "label": "Peatixグループ紹介",
+        "url": "https://hickey-aipartner.peatix.com/",
+        "primary": true
+      },
       {
         "label": "X（Twitter）",
         "url": "https://x.com/hickey_9999",
@@ -1563,7 +1579,9 @@ UPCOMING_SPEAKERS.forEach(s => {
         <div class="upcoming-theme">${s.theme}</div>
         <div class="upcoming-desc">${s.desc}</div>
         <div class="upcoming-date">🗓 ${s.date}</div>
-        ${s.peatixUrl ? `<a href="${s.peatixUrl}" class="timeline-peatix-link">Peatixのページを見る →</a>` : s.groupUrl ? `<a href="${s.groupUrl}" class="timeline-peatix-link upcoming-group-link">Peatixのページを見る →</a><p class="cta-note">グループ紹介ページ・申込準備中</p>` : ''}
+        ${s.venue ? `<p class="upcoming-desc">${s.venue}</p>` : ''}
+        ${s.highlights ? `<ul class="upcoming-desc">${s.highlights.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
+        ${s.peatixUrl ? `<a href="${s.peatixUrl}" class="timeline-peatix-link upcoming-group-link">Peatixのページを見る →</a>` : s.groupUrl ? `<a href="${s.groupUrl}" class="timeline-peatix-link upcoming-group-link">Peatixのページを見る →</a><p class="cta-note">グループ紹介ページ・申込準備中</p>` : ''}
       </div>
     </div>`);
 });
